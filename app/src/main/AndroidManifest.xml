@@ -58,6 +58,10 @@
 
         <activity android:name=".AboutActivity" />
 
+        <activity
+            android:name=".AdjustActivity"
+            android:theme="@style/AdjustTheme" />
+
     </application>
 
 </manifest>

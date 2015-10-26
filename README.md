@@ -3,6 +3,8 @@ Materialize "靓晒"
 
 Materialize all those not material - "乜都靓晒"
 
+![](screencast.gif)
+
 ## Build
 
 ### Requirements

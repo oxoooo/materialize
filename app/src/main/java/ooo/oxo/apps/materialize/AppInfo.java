@@ -27,25 +27,35 @@ import android.graphics.drawable.Drawable;
 
 public class AppInfo {
 
+    public ActivityInfo activityInfo;
+
     public ComponentName component;
 
     public String label;
 
     public Bitmap icon;
 
+    private AppInfo() {
+    }
+
     public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager) {
         AppInfo app = new AppInfo();
+        app.activityInfo = activityInfo;
+        app.resolve(packageManager);
+        return app;
+    }
 
-        app.component = new ComponentName(activityInfo.packageName, activityInfo.name);
+    public void resolve(PackageManager packageManager) {
+        this.component = new ComponentName(activityInfo.packageName, activityInfo.name);
 
-        app.label = activityInfo.loadLabel(packageManager).toString();
+        this.label = activityInfo.loadLabel(packageManager).toString();
 
         Drawable icon = activityInfo.loadIcon(packageManager);
         if (icon != null && icon instanceof BitmapDrawable) {
-            app.icon = ((BitmapDrawable) icon).getBitmap();
+            this.icon = ((BitmapDrawable) icon).getBitmap();
+        } else {
+            this.icon = null;
         }
-
-        return app;
     }
 
 }

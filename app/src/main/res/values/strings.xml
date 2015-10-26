@@ -29,6 +29,12 @@
     <string name="update_confirm">Download Now</string>
     <string name="update_cancel">Cancel</string>
 
+    <string name="shape_square">Square</string>
+    <string name="shape_round">Round</string>
+
+    <string name="adjust_ok">Add to launcher</string>
+    <string name="adjust_cancel">Cancel</string>
+
     <string name="fail_stencil">Failed to load stencils</string>
     <string name="done">Icon is added to your launcher</string>
 

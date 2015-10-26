@@ -21,25 +21,13 @@ package ooo.oxo.apps.materialize;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
-
-import java.io.IOException;
 
 import ooo.oxo.apps.materialize.databinding.MainActivityBinding;
 import rx.Observable;
@@ -90,55 +78,9 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
     @Override
     public void onItemClick(AppInfoAdapter.ViewHolder holder) {
         AppInfo app = apps.get(holder.getAdapterPosition());
-
-        Bitmap back, mask, fore;
-
-        try {
-            back = BitmapFactory.decodeStream(getAssets().open("launcher-stencil/square/back.png"));
-            mask = BitmapFactory.decodeStream(getAssets().open("launcher-stencil/square/mask.png"));
-            fore = BitmapFactory.decodeStream(getAssets().open("launcher-stencil/square/fore.png"));
-        } catch (IOException e) {
-            Log.e(TAG, "failed loading stencil", e);
-            Toast.makeText(this, R.string.fail_stencil, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        float padding = 4 * getResources().getDisplayMetrics().density;
-
-        RectF destRect = new RectF(padding, padding, mask.getWidth() - padding, mask.getWidth() - padding);
-
-        Bitmap result = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(result);
-
-        Paint paint = new Paint();
-
-        canvas.drawBitmap(back, 0, 0, null);
-
-        canvas.saveLayer(0, 0, mask.getWidth(), mask.getHeight(), null);
-
-        canvas.drawColor(Color.WHITE);
-
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(app.icon, null, destRect, paint);
-
-        paint.setFlags(0);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-        canvas.drawBitmap(mask, 0, 0, paint);
-
-        canvas.drawBitmap(fore, 0, 0, null);
-
-        canvas.restore();
-
-        app.icon = result;
-
-        back.recycle();
-        mask.recycle();
-        fore.recycle();
-
-        LauncherUtil.installShortcut(this, app);
-
-        Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AdjustActivity.class);
+        intent.putExtra("activity", app.activityInfo);
+        startActivity(intent);
     }
 
     @Override

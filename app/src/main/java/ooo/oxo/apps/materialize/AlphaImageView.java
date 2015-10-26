@@ -18,19 +18,30 @@
 
 package ooo.oxo.apps.materialize;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.util.AttributeSet;
+import android.widget.ImageView;
 
-public class LauncherUtil {
+public class AlphaImageView extends ImageView {
 
-    public static void installShortcut(Context context, ComponentName component, String label, Bitmap icon) {
-        Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent().setComponent(component));
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
-        context.sendBroadcast(intent);
+    public AlphaImageView(Context context) {
+        super(context);
+    }
+
+    public AlphaImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public AlphaImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        GridUtil.drawAlphaGrid(canvas, getResources());
+        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null);
+        super.onDraw(canvas);
     }
 
 }

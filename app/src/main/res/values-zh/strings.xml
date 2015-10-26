@@ -29,6 +29,12 @@
     <string name="update_confirm">现在下载</string>
     <string name="update_cancel">取消</string>
 
+    <string name="shape_square">方形</string>
+    <string name="shape_round">圆形</string>
+
+    <string name="adjust_ok">添加到启动器</string>
+    <string name="adjust_cancel">取消</string>
+
     <string name="fail_stencil">模板加载失败</string>
     <string name="done">图标已添加到启动器</string>
 

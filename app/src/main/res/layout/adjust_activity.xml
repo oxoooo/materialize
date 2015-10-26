@@ -1,0 +1,162 @@
+<!--
+  ~ Materialize - Materialize all those not material
+  ~ Copyright (C) 2015  XiNGRZ <xxx@oxo.ooo>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".AdjustActivity">
+
+    <data>
+
+        <variable
+            name="app"
+            type="ooo.oxo.apps.materialize.AppInfo" />
+
+        <variable
+            name="shape"
+            type="ooo.oxo.apps.materialize.CompositionUtil.Shape" />
+
+        <variable
+            name="padding"
+            type="float" />
+
+        <import
+            alias="Shape"
+            type="ooo.oxo.apps.materialize.CompositionUtil.Shape" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/compose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ooo.oxo.apps.materialize.AlphaImageView
+                android:id="@+id/icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:imageBitmap="@{app.icon}"
+                tools:src="@mipmap/ic_launcher" />
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_add_24dp"
+                android:backgroundTint="?android:textColorSecondary" />
+
+            <ooo.oxo.apps.materialize.AlphaImageView
+                android:id="@+id/stencil"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@{shape == Shape.ROUND ? @drawable/stencil_round : @drawable/stencil_square}" />
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_arrow_forward_24dp"
+                android:backgroundTint="?android:textColorSecondary" />
+
+            <ooo.oxo.apps.materialize.MaterialIconView
+                android:id="@+id/result"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:image="@{app.icon}"
+                app:padding="@{padding}"
+                app:shape="@{shape}" />
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/shape"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/compose"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:checkedButton="@{shape == Shape.ROUND ? @id/shape_round : @id/shape_square}"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/shape_square"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/shape_square" />
+
+            <RadioButton
+                android:id="@+id/shape_round"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shape_round" />
+
+        </RadioGroup>
+
+        <SeekBar
+            android:id="@+id/padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shape"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:max="@{40 * 2 * 100}"
+            android:progress="@{(40 + (int) padding) * 100}" />
+
+        <Button
+            android:id="@+id/ok"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/padding"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="12dp"
+            android:minWidth="48dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
+            android:text="@string/adjust_ok"
+            android:textColor="?colorPrimary" />
+
+        <Button
+            android:id="@+id/cancel"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_below="@+id/padding"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_toStartOf="@+id/ok"
+            android:minWidth="48dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
+            android:text="@string/adjust_cancel" />
+
+    </RelativeLayout>
+
+</layout>
