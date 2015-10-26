@@ -36,6 +36,10 @@
             type="float" />
 
         <import
+            alias="R"
+            type="ooo.oxo.apps.materialize.R" />
+
+        <import
             alias="Shape"
             type="ooo.oxo.apps.materialize.CompositionUtil.Shape" />
 
@@ -67,11 +71,13 @@
                 android:background="@drawable/ic_add_24dp"
                 android:backgroundTint="?android:textColorSecondary" />
 
-            <ooo.oxo.apps.materialize.AlphaImageView
+            <ooo.oxo.apps.materialize.MaterialIconView
                 android:id="@+id/stencil"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:src="@{shape == Shape.ROUND ? @drawable/stencil_round : @drawable/stencil_square}" />
+                app:canvasBackgroundResource="@{R.color.accent}"
+                app:padding="@{padding}"
+                app:shape="@{shape}" />
 
             <View
                 android:layout_width="24dp"

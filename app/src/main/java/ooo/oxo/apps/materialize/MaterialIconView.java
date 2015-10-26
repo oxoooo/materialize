@@ -20,8 +20,11 @@ package ooo.oxo.apps.materialize;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -29,24 +32,22 @@ public class MaterialIconView extends View {
 
     private CompositionUtil.Shape shape = CompositionUtil.Shape.SQUARE;
 
-    private Bitmap image;
+    private Bitmap image = null;
 
-    private float padding;
+    private float padding = 0;
+
+    private int canvasBackground = Color.WHITE;
 
     public MaterialIconView(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public MaterialIconView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public MaterialIconView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        if (isInEditMode()) {
-            setImage(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        }
     }
 
     public void setImage(Bitmap image) {
@@ -64,6 +65,15 @@ public class MaterialIconView extends View {
         invalidate();
     }
 
+    public void setCanvasBackground(@ColorInt int canvasBackground) {
+        this.canvasBackground = canvasBackground;
+        invalidate();
+    }
+
+    public void setCanvasBackgroundResource(@ColorRes int resId) {
+        setCanvasBackground(ContextCompat.getColor(getContext(), resId));
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -72,9 +82,7 @@ public class MaterialIconView extends View {
 
         canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null);
 
-        if (image != null) {
-            CompositionUtil.compose(getContext(), image, canvas, shape, padding);
-        }
+        CompositionUtil.compose(getContext(), image, canvas, shape, padding, canvasBackground);
     }
 
 }

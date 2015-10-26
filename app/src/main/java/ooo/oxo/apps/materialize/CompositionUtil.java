@@ -27,6 +27,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -35,7 +37,13 @@ public class CompositionUtil {
 
     private static final String TAG = "CompositionUtil";
 
-    public static void compose(Context context, Bitmap source, Canvas into, Shape shape, float padding) {
+    public static void compose(Context context, @Nullable Bitmap source, Canvas into,
+                               Shape shape, float padding) {
+        compose(context, source, into, shape, padding, Color.WHITE);
+    }
+
+    public static void compose(Context context, @Nullable Bitmap source, Canvas into,
+                               Shape shape, float padding, @ColorInt int background) {
         Bitmap back, mask, fore;
 
         try {
@@ -64,9 +72,11 @@ public class CompositionUtil {
 
         into.saveLayer(rect, null);
 
-        into.drawColor(Color.WHITE);
+        into.drawColor(background);
 
-        into.drawBitmap(source, null, rectPadding, paint);
+        if (source != null) {
+            into.drawBitmap(source, null, rectPadding, paint);
+        }
 
         paint.setFlags(0);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
