@@ -54,6 +54,8 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .compose(bindToLifecycle())
                 .subscribe(binding::setApp);
 
+        binding.setShape(CompositionUtil.Shape.SQUARE);
+
         // FIXME: 应该双向绑定
 
         binding.shape.setOnCheckedChangeListener((group, checkedId) ->

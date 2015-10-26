@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,9 +79,14 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
     @Override
     public void onItemClick(AppInfoAdapter.ViewHolder holder) {
         AppInfo app = apps.get(holder.getAdapterPosition());
+
         Intent intent = new Intent(this, AdjustActivity.class);
         intent.putExtra("activity", app.activityInfo);
-        startActivity(intent);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
+                holder.itemView, 0, 0, holder.itemView.getWidth(), holder.itemView.getHeight());
+
+        startActivity(intent, options.toBundle());
     }
 
     @Override
