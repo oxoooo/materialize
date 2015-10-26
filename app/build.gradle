@@ -1,0 +1,135 @@
+/*
+ * Materialize - Materialize all those not material
+ * Copyright (C) 2015  XiNGRZ <xxx@oxo.ooo>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.android.databinding'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "ooo.oxo.apps.materialize"
+
+        minSdkVersion 21
+
+        targetSdkVersion 23
+
+        versionCode 10000
+        versionName "1.0.0"
+
+        if (project.hasProperty('FIR_API_TOKEN')) {
+            buildConfigField "String", "FIR_API_TOKEN", "\"${FIR_API_TOKEN}\""
+        } else {
+            buildConfigField "String", "FIR_API_TOKEN", "null"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    if (project.hasProperty('STOREFILE')) {
+        signingConfigs {
+            release {
+                storeFile file(STOREFILE)
+                storePassword STOREPASS
+                keyAlias KEYALIAS
+                keyPassword KEYPASS
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            if (project.hasProperty('STOREFILE')) {
+                println "using release keystore ${signingConfigs.release.storeFile}"
+                signingConfig signingConfigs.release
+            } else {
+                println "using default key"
+            }
+        }
+    }
+
+    productFlavors {
+        github {
+            manifestPlaceholders = [UMENG_CHANNEL: "GitHub"]
+        }
+
+        fir {
+            manifestPlaceholders = [UMENG_CHANNEL: "FIR"]
+        }
+
+        google {
+            manifestPlaceholders = [UMENG_CHANNEL: "Google"]
+        }
+
+        wandoujia {
+            manifestPlaceholders = [UMENG_CHANNEL: "Wandoujia"]
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                output.outputFile = file("${output.outputFile.parent}/materialize" +
+                        "-${variant.buildType.name.toLowerCase()}" +
+                        "-${variant.versionName}" +
+                        "-${variant.flavorName.toLowerCase()}" +
+                        ".apk")
+            }
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:palette-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+
+    compile 'io.reactivex:rxandroid:1.0.1'
+
+    compile 'com.trello:rxlifecycle:0.3.0'
+    compile 'com.trello:rxlifecycle-components:0.3.0'
+
+    compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.3.0'
+
+    compile 'com.github.oxoooo:data-binding-support:1.1.0'
+
+    compile 'com.umeng.analytics:analytics:latest.integration'
+
+    compile 'im.fir:sdk:latest.integration'
+}
