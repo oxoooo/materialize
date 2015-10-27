@@ -80,7 +80,7 @@ public class MaterialIconView extends View {
 
         GridUtil.drawAlphaGrid(canvas, getResources());
 
-        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null);
+        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
 
         CompositionUtil.compose(getContext(), image, canvas, shape, padding, canvasBackground);
     }

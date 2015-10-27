@@ -40,7 +40,7 @@ public class AlphaImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         GridUtil.drawAlphaGrid(canvas, getResources());
-        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null);
+        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
         super.onDraw(canvas);
     }
 

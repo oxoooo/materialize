@@ -37,7 +37,7 @@ import rx.schedulers.Schedulers;
 
 public class AdjustActivity extends RxAppCompatActivity {
 
-    private static final int LAUNCHER_SIZE = 48 * 4;
+    private static final int LAUNCHER_SIZE = 48;
 
     private AdjustActivityBinding binding;
 
@@ -55,6 +55,8 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .subscribe(binding::setApp);
 
         binding.setShape(CompositionUtil.Shape.SQUARE);
+
+        binding.executePendingBindings();
 
         // FIXME: 应该双向绑定
 
@@ -83,7 +85,9 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .compose(bindToLifecycle())
                 .subscribe(avoid -> supportFinishAfterTransition());
 
-        Bitmap result = Bitmap.createBitmap(LAUNCHER_SIZE, LAUNCHER_SIZE, Bitmap.Config.ARGB_8888);
+        int size = (int) (LAUNCHER_SIZE * getResources().getDisplayMetrics().density);
+
+        Bitmap result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
 
         Observable<Void> renders = Observable

@@ -70,7 +70,7 @@ public class CompositionUtil {
 
         into.drawBitmap(back, null, rect, paint);
 
-        into.saveLayer(rect, null);
+        into.saveLayer(rect, null, Canvas.ALL_SAVE_FLAG);
 
         into.drawColor(background);
 

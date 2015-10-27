@@ -27,12 +27,12 @@ android {
     defaultConfig {
         applicationId "ooo.oxo.apps.materialize"
 
-        minSdkVersion 21
+        minSdkVersion 15
 
         targetSdkVersion 23
 
-        versionCode 10100
-        versionName "1.1.0"
+        versionCode 10101
+        versionName "1.1.1"
 
         if (project.hasProperty('FIR_API_TOKEN')) {
             buildConfigField "String", "FIR_API_TOKEN", "\"${FIR_API_TOKEN}\""

@@ -68,8 +68,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/ic_add_24dp"
-                android:backgroundTint="?android:textColorSecondary" />
+                android:alpha="0.3"
+                android:background="@drawable/ic_add_24dp" />
 
             <ooo.oxo.apps.materialize.MaterialIconView
                 android:id="@+id/stencil"
@@ -83,8 +83,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/ic_arrow_forward_24dp"
-                android:backgroundTint="?android:textColorSecondary" />
+                android:alpha="0.3"
+                android:background="@drawable/ic_arrow_forward_24dp" />
 
             <ooo.oxo.apps.materialize.MaterialIconView
                 android:id="@+id/result"
@@ -112,6 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/shape_square" />
 
             <RadioButton
@@ -138,9 +139,11 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/padding"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
             android:layout_marginTop="12dp"
             android:minWidth="48dp"
             android:paddingEnd="12dp"
@@ -156,7 +159,9 @@
             android:layout_below="@+id/padding"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="12dp"
+            android:layout_toLeftOf="@+id/ok"
             android:layout_toStartOf="@+id/ok"
             android:minWidth="48dp"
             android:paddingEnd="12dp"
