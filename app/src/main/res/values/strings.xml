@@ -29,8 +29,16 @@
     <string name="update_confirm">Download Now</string>
     <string name="update_cancel">Cancel</string>
 
+    <string name="adjust_label_shape">Shape</string>
+    <string name="adjust_label_padding">Padding</string>
+    <string name="adjust_label_color">Color</string>
+
     <string name="shape_square">Square</string>
     <string name="shape_round">Round</string>
+
+    <string name="color_white">White</string>
+    <string name="color_primary">Primary</string>
+    <string name="color_gradient">Gradient</string>
 
     <string name="adjust_ok">Add to launcher</string>
     <string name="adjust_cancel">Cancel</string>

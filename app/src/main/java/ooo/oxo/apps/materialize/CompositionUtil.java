@@ -23,13 +23,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 
@@ -42,19 +41,16 @@ public class CompositionUtil {
     private static final int FLAG_SCALES = Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG;
 
     public static void compose(Context context, @Nullable Bitmap source, Canvas into,
-                               Shape shape, float padding) {
-        compose(context, source, into, shape, padding, Color.WHITE);
-    }
-
-    public static void compose(Context context, @Nullable Bitmap source, Canvas into,
-                               Shape shape, float padding, @ColorInt int background) {
+                               Shape shape, float padding, Drawable background) {
         Resources resources = context.getResources();
 
         Bitmap back = shape.getBackBitmap(resources);
         Bitmap mask = shape.getMaskBitmap(resources);
         Bitmap fore = shape.getForeBitmap(resources);
 
-        padding += shape.defaultPadding * context.getResources().getDisplayMetrics().density;
+        float density = context.getResources().getDisplayMetrics().density;
+
+        padding += shape.defaultPadding * density;
 
         RectF rect = new RectF(0, 0, into.getWidth(), into.getHeight());
 
@@ -72,14 +68,17 @@ public class CompositionUtil {
 
         into.saveLayer(rect, null, Canvas.ALL_SAVE_FLAG);
 
-        into.drawColor(background);
+        if (background != null) {
+            int p = (int) Math.floor((shape.defaultPadding - 1) * density);
+            background.setBounds(p, p, into.getWidth() - p, into.getHeight() - p);
+            background.draw(into);
+        }
 
         if (source != null) {
             paint.setFlags(FLAG_SCALES);
             into.drawBitmap(source, null, rectPadding, paint);
             paint.setFlags(0);
         }
-
 
         paint.setFlags(SCALES ? FLAG_SCALES : 0);
 
@@ -99,7 +98,7 @@ public class CompositionUtil {
     }
 
     public enum Shape {
-        SQUARE(4,
+        SQUARE(6,
                 R.drawable.stencil_square_back,
                 R.drawable.stencil_square_mask,
                 R.drawable.stencil_square_fore),

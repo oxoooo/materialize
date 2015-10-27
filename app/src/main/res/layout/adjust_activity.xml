@@ -35,9 +35,17 @@
             name="padding"
             type="float" />
 
-        <import
-            alias="R"
-            type="ooo.oxo.apps.materialize.R" />
+        <variable
+            name="background"
+            type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="vibrant"
+            type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="gradient"
+            type="android.graphics.drawable.Drawable" />
 
         <import
             alias="Shape"
@@ -45,15 +53,21 @@
 
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/compose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="32dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -75,7 +89,7 @@
                 android:id="@+id/stencil"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                app:canvasBackgroundResource="@{R.color.accent}"
+                app:canvasBackground="@{background}"
                 app:padding="@{padding}"
                 app:shape="@{shape}" />
 
@@ -90,84 +104,171 @@
                 android:id="@+id/result"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                app:canvasBackground="@{background}"
                 app:image="@{app.icon}"
                 app:padding="@{padding}"
                 app:shape="@{shape}" />
 
         </LinearLayout>
 
-        <RadioGroup
-            android:id="@+id/shape"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/compose"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:checkedButton="@{shape == Shape.ROUND ? @id/shape_round : @id/shape_square}"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/adjust_label_shape" />
+
+                    <RadioGroup
+                        android:id="@+id/shape"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginStart="16dp"
+                        android:checkedButton="@{shape == Shape.ROUND ? @id/shape_round : @id/shape_square}"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/shape_square"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            android:text="@string/shape_square" />
+
+                        <RadioButton
+                            android:id="@+id/shape_round"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/shape_round" />
+
+                    </RadioGroup>
+
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/adjust_label_padding" />
+
+                    <SeekBar
+                        android:id="@+id/padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginStart="16dp"
+                        android:max="@{40 * 2 * 100}"
+                        android:progress="@{(40 + (int) padding) * 100}" />
+
+                </TableRow>
+
+                <TableRow android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/adjust_label_color" />
+
+                    <RadioGroup
+                        android:id="@+id/colors"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="6dp"
+                        android:checkedButton="@+id/color_white"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/color_white"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:text="@string/color_white" />
+
+                        <RadioButton
+                            android:id="@+id/color_vibrant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:enabled="@{vibrant != null}"
+                            android:text="@string/color_primary" />
+
+                        <RadioButton
+                            android:id="@+id/color_gradient"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:enabled="@{gradient != null}"
+                            android:text="@string/color_gradient" />
+
+                    </RadioGroup>
+
+                </TableRow>
+
+            </TableLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="end"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/shape_square"
+            <Button
+                android:id="@+id/cancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@string/shape_square" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:minWidth="64dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:text="@string/adjust_cancel" />
 
-            <RadioButton
-                android:id="@+id/shape_round"
+            <Button
+                android:id="@+id/ok"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/shape_round" />
+                android:layout_height="match_parent"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
+                android:minWidth="64dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:text="@string/adjust_ok"
+                android:textColor="?colorPrimary" />
 
-        </RadioGroup>
+        </LinearLayout>
 
-        <SeekBar
-            android:id="@+id/padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/shape"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:max="@{40 * 2 * 100}"
-            android:progress="@{(40 + (int) padding) * 100}" />
-
-        <Button
-            android:id="@+id/ok"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/padding"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="12dp"
-            android:minWidth="48dp"
-            android:paddingEnd="12dp"
-            android:paddingStart="12dp"
-            android:text="@string/adjust_ok"
-            android:textColor="?colorPrimary" />
-
-        <Button
-            android:id="@+id/cancel"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_below="@+id/padding"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_toLeftOf="@+id/ok"
-            android:layout_toStartOf="@+id/ok"
-            android:minWidth="48dp"
-            android:paddingEnd="12dp"
-            android:paddingStart="12dp"
-            android:text="@string/adjust_cancel" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </layout>

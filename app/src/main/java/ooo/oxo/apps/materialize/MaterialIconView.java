@@ -21,10 +21,7 @@ package ooo.oxo.apps.materialize;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.v4.content.ContextCompat;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -36,7 +33,7 @@ public class MaterialIconView extends View {
 
     private float padding = 0;
 
-    private int canvasBackground = Color.WHITE;
+    private Drawable canvasBackground = null;
 
     public MaterialIconView(Context context) {
         super(context);
@@ -65,13 +62,9 @@ public class MaterialIconView extends View {
         invalidate();
     }
 
-    public void setCanvasBackground(@ColorInt int canvasBackground) {
+    public void setCanvasBackground(Drawable canvasBackground) {
         this.canvasBackground = canvasBackground;
         invalidate();
-    }
-
-    public void setCanvasBackgroundResource(@ColorRes int resId) {
-        setCanvasBackground(ContextCompat.getColor(getContext(), resId));
     }
 
     @Override

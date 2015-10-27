@@ -22,8 +22,11 @@ import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -46,22 +49,53 @@ public class AdjustActivity extends RxAppCompatActivity {
 
     private AdjustActivityBinding binding;
 
+    private ColorDrawable white = new ColorDrawable(Color.WHITE);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.adjust_activity);
 
-        Observable.just((ActivityInfo) getIntent().getParcelableExtra("activity"))
+        Observable<AppInfo> resolving = Observable.just(getIntent())
+                .map(intent -> (ActivityInfo) intent.getParcelableExtra("activity"))
+                .map(activity -> AppInfo.from(activity, getPackageManager()))
+                .cache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(activity -> AppInfo.from(activity, getPackageManager()))
-                .compose(bindToLifecycle())
-                .subscribe(binding::setApp);
+                .compose(bindToLifecycle());
+
+        resolving.subscribe(binding::setApp);
+
+        resolving.subscribeOn(Schedulers.computation())
+                .map(app -> Palette.from(app.icon).generate())
+                .map(Palette::getVibrantSwatch)
+                .filter(swatch -> swatch != null)
+                .map(Palette.Swatch::getRgb)
+                .map(ColorDrawable::new)
+                .subscribe(binding::setVibrant);
+
+        resolving.subscribeOn(Schedulers.computation())
+                .map(app -> GradientExtractor.extract(app.icon))
+                .filter(gradient -> gradient != null)
+                .subscribe(binding::setGradient);
 
         binding.setShape(CompositionUtil.Shape.SQUARE);
+        binding.setBackground(white);
 
-        binding.executePendingBindings();
+        binding.colors.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.color_white:
+                    binding.setBackground(white);
+                    break;
+                case R.id.color_vibrant:
+                    binding.setBackground(binding.getVibrant());
+                    break;
+                case R.id.color_gradient:
+                    binding.setBackground(binding.getGradient());
+                    break;
+            }
+        });
 
         // FIXME: 应该双向绑定
 
@@ -86,6 +120,8 @@ public class AdjustActivity extends RxAppCompatActivity {
             }
         });
 
+        binding.executePendingBindings();
+
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
                 .subscribe(avoid -> supportFinishAfterTransition());
@@ -100,7 +136,7 @@ public class AdjustActivity extends RxAppCompatActivity {
         Observable<Void> renders = Observable
                 .defer(() -> {
                     CompositionUtil.compose(this, binding.getApp().icon, canvas,
-                            binding.getShape(), binding.getPadding());
+                            binding.getShape(), binding.getPadding(), binding.getBackground());
                     return Observable.<Void>just(null);
                 })
                 .compose(bindToLifecycle())
