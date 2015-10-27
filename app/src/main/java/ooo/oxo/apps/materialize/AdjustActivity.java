@@ -22,6 +22,7 @@ import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -37,7 +38,11 @@ import rx.schedulers.Schedulers;
 
 public class AdjustActivity extends RxAppCompatActivity {
 
-    private static final int LAUNCHER_SIZE = 48;
+    /**
+     * Icon size in pixel since Android 4.3 (18) with mipmaps support
+     * It's the actual size of drawables in drawable-anydpi-v18 folder
+     */
+    private static final int LAUNCHER_SIZE_MIPMAP = 192;
 
     private AdjustActivityBinding binding;
 
@@ -85,7 +90,9 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .compose(bindToLifecycle())
                 .subscribe(avoid -> supportFinishAfterTransition());
 
-        int size = (int) (LAUNCHER_SIZE * getResources().getDisplayMetrics().density);
+        int size = Build.VERSION.SDK_INT < 18
+                ? getResources().getDimensionPixelSize(R.dimen.launcher_size)
+                : LAUNCHER_SIZE_MIPMAP;
 
         Bitmap result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);

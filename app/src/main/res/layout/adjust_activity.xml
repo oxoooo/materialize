@@ -59,8 +59,8 @@
 
             <ooo.oxo.apps.materialize.AlphaImageView
                 android:id="@+id/icon"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 app:imageBitmap="@{app.icon}"
                 tools:src="@mipmap/ic_launcher" />
 
@@ -73,8 +73,8 @@
 
             <ooo.oxo.apps.materialize.MaterialIconView
                 android:id="@+id/stencil"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 app:canvasBackgroundResource="@{R.color.accent}"
                 app:padding="@{padding}"
                 app:shape="@{shape}" />
@@ -88,8 +88,8 @@
 
             <ooo.oxo.apps.materialize.MaterialIconView
                 android:id="@+id/result"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 app:image="@{app.icon}"
                 app:padding="@{padding}"
                 app:shape="@{shape}" />

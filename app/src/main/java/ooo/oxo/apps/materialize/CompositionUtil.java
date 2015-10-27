@@ -19,6 +19,7 @@
 package ooo.oxo.apps.materialize;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,15 +28,18 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import java.io.IOException;
 
 public class CompositionUtil {
 
     private static final String TAG = "CompositionUtil";
+
+    private static final boolean SCALES = Build.VERSION.SDK_INT >= 18;
+
+    private static final int FLAG_SCALES = Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG;
 
     public static void compose(Context context, @Nullable Bitmap source, Canvas into,
                                Shape shape, float padding) {
@@ -44,18 +48,13 @@ public class CompositionUtil {
 
     public static void compose(Context context, @Nullable Bitmap source, Canvas into,
                                Shape shape, float padding, @ColorInt int background) {
-        Bitmap back, mask, fore;
+        Resources resources = context.getResources();
 
-        try {
-            back = BitmapFactory.decodeStream(context.getAssets().open(shape.getPath() + "/back.png"));
-            mask = BitmapFactory.decodeStream(context.getAssets().open(shape.getPath() + "/mask.png"));
-            fore = BitmapFactory.decodeStream(context.getAssets().open(shape.getPath() + "/fore.png"));
-        } catch (IOException e) {
-            Log.e(TAG, "failed loading stencil", e);
-            return;
-        }
+        Bitmap back = shape.getBackBitmap(resources);
+        Bitmap mask = shape.getMaskBitmap(resources);
+        Bitmap fore = shape.getForeBitmap(resources);
 
-        padding += shape.getDefaultPadding() * context.getResources().getDisplayMetrics().density;
+        padding += shape.defaultPadding * context.getResources().getDisplayMetrics().density;
 
         RectF rect = new RectF(0, 0, into.getWidth(), into.getHeight());
 
@@ -66,23 +65,31 @@ public class CompositionUtil {
         rectPadding.bottom -= padding;
 
         Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
+        paint.setFlags(SCALES ? FLAG_SCALES : 0);
         into.drawBitmap(back, null, rect, paint);
+        paint.setFlags(0);
 
         into.saveLayer(rect, null, Canvas.ALL_SAVE_FLAG);
 
         into.drawColor(background);
 
         if (source != null) {
+            paint.setFlags(FLAG_SCALES);
             into.drawBitmap(source, null, rectPadding, paint);
+            paint.setFlags(0);
         }
 
-        paint.setFlags(0);
+
+        paint.setFlags(SCALES ? FLAG_SCALES : 0);
+
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
         into.drawBitmap(mask, null, rect, paint);
+        paint.setXfermode(null);
 
-        into.drawBitmap(fore, null, rect, null);
+        into.drawBitmap(fore, null, rect, paint);
+
+        paint.setFlags(0);
 
         into.restore();
 
@@ -92,21 +99,51 @@ public class CompositionUtil {
     }
 
     public enum Shape {
-        SQUARE(4),
-        ROUND(2);
+        SQUARE(4,
+                R.drawable.stencil_square_back,
+                R.drawable.stencil_square_mask,
+                R.drawable.stencil_square_fore),
 
-        private final int defaultPadding;
+        ROUND(2,
+                R.drawable.stencil_round_back,
+                R.drawable.stencil_round_mask,
+                R.drawable.stencil_round_fore);
 
-        Shape(int defaultPadding) {
+        public final int defaultPadding;
+
+        @DrawableRes
+        public final int back;
+
+        @DrawableRes
+        public final int mask;
+
+        @DrawableRes
+        public final int fore;
+
+        Shape(int defaultPadding, @DrawableRes int back, @DrawableRes int mask, @DrawableRes int fore) {
             this.defaultPadding = defaultPadding;
+            this.back = back;
+            this.mask = mask;
+            this.fore = fore;
         }
 
-        public int getDefaultPadding() {
-            return defaultPadding;
+        public Bitmap getBitmap(Resources resources, @DrawableRes int drawable) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+
+            return BitmapFactory.decodeResource(resources, drawable, options);
         }
 
-        public String getPath() {
-            return "launcher-stencil/" + name().toLowerCase();
+        public Bitmap getBackBitmap(Resources resources) {
+            return getBitmap(resources, back);
+        }
+
+        public Bitmap getMaskBitmap(Resources resources) {
+            return getBitmap(resources, mask);
+        }
+
+        public Bitmap getForeBitmap(Resources resources) {
+            return getBitmap(resources, fore);
         }
 
     }
