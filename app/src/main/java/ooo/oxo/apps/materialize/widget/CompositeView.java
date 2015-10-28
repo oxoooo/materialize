@@ -20,59 +20,47 @@ package ooo.oxo.apps.materialize.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.ImageView;
 
-import ooo.oxo.apps.materialize.graphics.Compositor;
+import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 
-public class CompositeView extends View {
+public class CompositeView extends ImageView {
 
-    private Compositor.Shape shape = Compositor.Shape.SQUARE;
-
-    private Bitmap image = null;
-
-    private float padding = 0;
-
-    private Drawable canvasBackground = null;
+    private CompositeDrawable composite;
 
     public CompositeView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public CompositeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public CompositeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setImageDrawable(composite = new CompositeDrawable(getResources()));
     }
 
     public void setImage(Bitmap image) {
-        this.image = image;
-        invalidate();
+        composite.setSource(image);
     }
 
-    public void setShape(Compositor.Shape shape) {
-        this.shape = shape;
-        invalidate();
+    public void setShape(CompositeDrawable.Shape shape) {
+        composite.setShape(shape);
     }
 
     public void setPadding(float padding) {
-        this.padding = padding;
-        invalidate();
+        composite.setPadding(padding);
     }
 
-    public void setCanvasBackground(Drawable canvasBackground) {
-        this.canvasBackground = canvasBackground;
-        invalidate();
+    public void setCanvasBackground(Drawable background) {
+        composite.setBackground(background);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        Compositor.compose(getContext(), image, canvas, shape, padding, canvasBackground);
+    public CompositeDrawable getComposite() {
+        return composite;
     }
 
 }

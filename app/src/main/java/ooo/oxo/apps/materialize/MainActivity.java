@@ -24,7 +24,6 @@ import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -51,7 +50,6 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         setSupportActionBar(binding.toolbar);
 
-        binding.apps.setItemAnimator(new DefaultItemAnimator());
         binding.apps.setAdapter(new AppInfoAdapter(this, apps, this));
 
         Observable
@@ -60,9 +58,6 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
                             .addCategory(Intent.CATEGORY_LAUNCHER);
                     return Observable.from(getPackageManager().queryIntentActivities(intent, 0));
                 })
-                .compose(bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager()))
                 .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
                 .filter(app -> !app.component.getPackageName().startsWith("com.android."))
@@ -71,6 +66,9 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
                 .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
                 .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
                 .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."))
+                .compose(bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(apps::add);
 
         UpdateUtil.checkForUpdateAndPrompt(this);

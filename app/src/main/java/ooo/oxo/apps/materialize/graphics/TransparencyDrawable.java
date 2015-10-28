@@ -71,10 +71,12 @@ public class TransparencyDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
+        // not support
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
+        // not support
     }
 
     @Override

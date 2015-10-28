@@ -29,7 +29,7 @@
 
         <variable
             name="shape"
-            type="ooo.oxo.apps.materialize.graphics.Compositor.Shape" />
+            type="ooo.oxo.apps.materialize.graphics.CompositeDrawable.Shape" />
 
         <variable
             name="padding"
@@ -53,7 +53,7 @@
 
         <import
             alias="Shape"
-            type="ooo.oxo.apps.materialize.graphics.Compositor.Shape" />
+            type="ooo.oxo.apps.materialize.graphics.CompositeDrawable.Shape" />
 
     </data>
 

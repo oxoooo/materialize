@@ -22,4 +22,7 @@
 
     <dimen name="transparency_grid_size">4dp</dimen>
 
+    <dimen name="default_padding_square">6dp</dimen>
+    <dimen name="default_padding_round">2dp</dimen>
+
 </resources>

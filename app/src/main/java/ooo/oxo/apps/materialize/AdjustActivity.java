@@ -35,7 +35,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
-import ooo.oxo.apps.materialize.graphics.Compositor;
+import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.GradientExtractor;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
@@ -44,6 +44,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class AdjustActivity extends RxAppCompatActivity {
+
+    private static final boolean SUPPORT_MIPMAP = Build.VERSION.SDK_INT >= 18;
 
     /**
      * Icon size in pixel since Android 4.3 (18) with mipmaps support
@@ -87,7 +89,7 @@ public class AdjustActivity extends RxAppCompatActivity {
         binding.setTransparency(new TransparencyDrawable(
                 getResources(), R.dimen.transparency_grid_size));
 
-        binding.setShape(Compositor.Shape.SQUARE);
+        binding.setShape(CompositeDrawable.Shape.SQUARE);
         binding.setBackground(white);
 
         binding.colors.setOnCheckedChangeListener((group, checkedId) -> {
@@ -108,7 +110,7 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         binding.shape.setOnCheckedChangeListener((group, checkedId) ->
                 binding.setShape(checkedId == R.id.shape_round
-                        ? Compositor.Shape.ROUND : Compositor.Shape.SQUARE));
+                        ? CompositeDrawable.Shape.ROUND : CompositeDrawable.Shape.SQUARE));
 
         binding.padding.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -137,24 +139,21 @@ public class AdjustActivity extends RxAppCompatActivity {
                 ? getResources().getDimensionPixelSize(R.dimen.launcher_size)
                 : LAUNCHER_SIZE_MIPMAP;
 
-        Bitmap result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-
-        Observable<Void> renders = Observable
-                .defer(() -> {
-                    Compositor.compose(this, binding.getApp().icon, canvas,
-                            binding.getShape(), binding.getPadding(), binding.getBackground());
-                    return Observable.<Void>just(null);
-                })
+        Observable<Bitmap> renders = Observable.just(binding.result.getComposite())
                 .compose(bindToLifecycle())
                 .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(compose -> {
+                    Bitmap result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+                    compose.drawTo(new Canvas(result), SUPPORT_MIPMAP);
+                    return result;
+                });
 
         RxView.clicks(binding.ok)
                 .filter(avoid -> binding.getApp() != null)
                 .flatMap(avoid -> renders)
                 .compose(bindToLifecycle())
-                .subscribe(avoid -> {
+                .subscribe(result -> {
                     LauncherUtil.installShortcut(this, binding.getApp().component, binding.getApp().label, result);
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
                     supportFinishAfterTransition();
