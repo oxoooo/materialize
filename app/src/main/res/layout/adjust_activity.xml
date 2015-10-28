@@ -45,7 +45,7 @@
 
         <variable
             name="gradient"
-            type="android.graphics.drawable.Drawable" />
+            type="ooo.oxo.apps.materialize.graphics.LinearGradientDrawable" />
 
         <variable
             name="transparency"

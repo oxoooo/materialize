@@ -38,7 +38,7 @@
 
     <string name="color_white">白色</string>
     <string name="color_primary">主色</string>
-    <string name="color_gradient">渐变</string>
+    <string name="color_gradient">智能填充 (beta)</string>
 
     <string name="adjust_ok">添加到启动器</string>
     <string name="adjust_cancel">取消</string>

@@ -36,7 +36,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
-import ooo.oxo.apps.materialize.graphics.GradientExtractor;
+import ooo.oxo.apps.materialize.graphics.LinearGradientDrawable;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
 import rx.Observable;
@@ -82,7 +82,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .subscribe(binding::setVibrant);
 
         resolving.subscribeOn(Schedulers.computation())
-                .map(app -> GradientExtractor.extract(app.icon))
+                .map(app -> LinearGradientDrawable.from(app.icon))
                 .filter(gradient -> gradient != null)
                 .subscribe(binding::setGradient);
 
@@ -116,7 +116,13 @@ public class AdjustActivity extends RxAppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    binding.setPadding((progress - seekBar.getMax() / 2f) / 100f);
+                    float padding = (progress - seekBar.getMax() / 2f) / 100f;
+
+                    binding.setPadding(padding);
+
+                    if (binding.getGradient() != null) {
+                        binding.getGradient().setPadding(padding);
+                    }
                 }
             }
 

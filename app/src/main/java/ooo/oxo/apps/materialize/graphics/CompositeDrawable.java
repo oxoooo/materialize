@@ -33,7 +33,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import ooo.oxo.apps.materialize.R;
 
@@ -118,7 +117,6 @@ public class CompositeDrawable extends Drawable {
     private void applyBackgroundBounds(Rect backgroundBounds) {
         int offset = resources.getDimensionPixelOffset(shape.padding);
         backgroundBounds.inset(offset, offset);
-        Log.d("Composite", backgroundBounds.toShortString());
     }
 
     private void invalidateBitmaps() {
