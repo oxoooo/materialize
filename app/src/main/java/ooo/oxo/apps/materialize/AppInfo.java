@@ -25,6 +25,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+/**
+ * A wrapper of {@link ActivityInfo}
+ */
 public class AppInfo {
 
     public ActivityInfo activityInfo;
@@ -38,6 +41,13 @@ public class AppInfo {
     private AppInfo() {
     }
 
+    /**
+     * Wraps and resolve an {@link ActivityInfo}
+     *
+     * @param activityInfo   The {@link ActivityInfo} object to resolve
+     * @param packageManager A {@link PackageManager} instance to resolve the {@link ActivityInfo}
+     * @return An {@link AppInfo} instance with its {@link #label} and {@link #icon} resolved
+     */
     public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager) {
         AppInfo app = new AppInfo();
         app.activityInfo = activityInfo;

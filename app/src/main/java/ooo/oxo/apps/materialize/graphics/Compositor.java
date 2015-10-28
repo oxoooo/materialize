@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ooo.oxo.apps.materialize;
+package ooo.oxo.apps.materialize.graphics;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -32,9 +32,11 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 
-public class CompositionUtil {
+import ooo.oxo.apps.materialize.R;
 
-    private static final String TAG = "CompositionUtil";
+public class Compositor {
+
+    private static final String TAG = "Compositor";
 
     private static final boolean SCALES = Build.VERSION.SDK_INT >= 18;
 

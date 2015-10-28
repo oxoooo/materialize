@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ooo.oxo.apps.materialize;
+package ooo.oxo.apps.materialize.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,9 +25,11 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class MaterialIconView extends View {
+import ooo.oxo.apps.materialize.graphics.Compositor;
 
-    private CompositionUtil.Shape shape = CompositionUtil.Shape.SQUARE;
+public class CompositeView extends View {
+
+    private Compositor.Shape shape = Compositor.Shape.SQUARE;
 
     private Bitmap image = null;
 
@@ -35,15 +37,15 @@ public class MaterialIconView extends View {
 
     private Drawable canvasBackground = null;
 
-    public MaterialIconView(Context context) {
+    public CompositeView(Context context) {
         super(context);
     }
 
-    public MaterialIconView(Context context, AttributeSet attrs) {
+    public CompositeView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MaterialIconView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CompositeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -52,7 +54,7 @@ public class MaterialIconView extends View {
         invalidate();
     }
 
-    public void setShape(CompositionUtil.Shape shape) {
+    public void setShape(Compositor.Shape shape) {
         this.shape = shape;
         invalidate();
     }
@@ -70,12 +72,7 @@ public class MaterialIconView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        GridUtil.drawAlphaGrid(canvas, getResources());
-
-        canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
-
-        CompositionUtil.compose(getContext(), image, canvas, shape, padding, canvasBackground);
+        Compositor.compose(getContext(), image, canvas, shape, padding, canvasBackground);
     }
 
 }

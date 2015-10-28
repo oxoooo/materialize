@@ -35,6 +35,10 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
+import ooo.oxo.apps.materialize.graphics.Compositor;
+import ooo.oxo.apps.materialize.graphics.GradientExtractor;
+import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
+import ooo.oxo.apps.materialize.util.LauncherUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -80,7 +84,10 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .filter(gradient -> gradient != null)
                 .subscribe(binding::setGradient);
 
-        binding.setShape(CompositionUtil.Shape.SQUARE);
+        binding.setTransparency(new TransparencyDrawable(
+                getResources(), R.dimen.transparency_grid_size));
+
+        binding.setShape(Compositor.Shape.SQUARE);
         binding.setBackground(white);
 
         binding.colors.setOnCheckedChangeListener((group, checkedId) -> {
@@ -101,7 +108,7 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         binding.shape.setOnCheckedChangeListener((group, checkedId) ->
                 binding.setShape(checkedId == R.id.shape_round
-                        ? CompositionUtil.Shape.ROUND : CompositionUtil.Shape.SQUARE));
+                        ? Compositor.Shape.ROUND : Compositor.Shape.SQUARE));
 
         binding.padding.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -135,7 +142,7 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         Observable<Void> renders = Observable
                 .defer(() -> {
-                    CompositionUtil.compose(this, binding.getApp().icon, canvas,
+                    Compositor.compose(this, binding.getApp().icon, canvas,
                             binding.getShape(), binding.getPadding(), binding.getBackground());
                     return Observable.<Void>just(null);
                 })

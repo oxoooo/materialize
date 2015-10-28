@@ -20,4 +20,6 @@
 
     <dimen name="launcher_size">48dp</dimen>
 
+    <dimen name="transparency_grid_size">4dp</dimen>
+
 </resources>

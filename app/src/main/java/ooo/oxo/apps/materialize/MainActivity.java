@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import ooo.oxo.apps.materialize.databinding.MainActivityBinding;
+import ooo.oxo.apps.materialize.util.UpdateUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -39,15 +41,13 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
     private static final String TAG = "MainActivity";
 
-    private MainActivityBinding binding;
-
     private ObservableArrayList<AppInfo> apps = new ObservableArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.main_activity);
+        MainActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.main_activity);
 
         setSupportActionBar(binding.toolbar);
 
@@ -86,7 +86,7 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
         ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
                 holder.itemView, 0, 0, holder.itemView.getWidth(), holder.itemView.getHeight());
 
-        startActivity(intent, options.toBundle());
+        ActivityCompat.startActivity(this, intent, options.toBundle());
     }
 
     @Override

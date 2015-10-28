@@ -29,7 +29,7 @@
 
         <variable
             name="shape"
-            type="ooo.oxo.apps.materialize.CompositionUtil.Shape" />
+            type="ooo.oxo.apps.materialize.graphics.Compositor.Shape" />
 
         <variable
             name="padding"
@@ -47,9 +47,13 @@
             name="gradient"
             type="android.graphics.drawable.Drawable" />
 
+        <variable
+            name="transparency"
+            type="android.graphics.drawable.Drawable" />
+
         <import
             alias="Shape"
-            type="ooo.oxo.apps.materialize.CompositionUtil.Shape" />
+            type="ooo.oxo.apps.materialize.graphics.Compositor.Shape" />
 
     </data>
 
@@ -71,10 +75,11 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ooo.oxo.apps.materialize.AlphaImageView
+            <ImageView
                 android:id="@+id/icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:background="@{transparency}"
                 app:imageBitmap="@{app.icon}"
                 tools:src="@mipmap/ic_launcher" />
 
@@ -85,10 +90,11 @@
                 android:alpha="0.3"
                 android:background="@drawable/ic_add_24dp" />
 
-            <ooo.oxo.apps.materialize.MaterialIconView
+            <ooo.oxo.apps.materialize.widget.CompositeView
                 android:id="@+id/stencil"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:background="@{transparency}"
                 app:canvasBackground="@{background}"
                 app:padding="@{padding}"
                 app:shape="@{shape}" />
@@ -100,10 +106,11 @@
                 android:alpha="0.3"
                 android:background="@drawable/ic_arrow_forward_24dp" />
 
-            <ooo.oxo.apps.materialize.MaterialIconView
+            <ooo.oxo.apps.materialize.widget.CompositeView
                 android:id="@+id/result"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:background="@{transparency}"
                 app:canvasBackground="@{background}"
                 app:image="@{app.icon}"
                 app:padding="@{padding}"

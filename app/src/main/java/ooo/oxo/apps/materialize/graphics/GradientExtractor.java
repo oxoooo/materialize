@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ooo.oxo.apps.materialize;
+package ooo.oxo.apps.materialize.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

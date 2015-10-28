@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ooo.oxo.apps.materialize;
+package ooo.oxo.apps.materialize.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +27,8 @@ import android.text.TextUtils;
 import im.fir.sdk.FIR;
 import im.fir.sdk.callback.VersionCheckCallback;
 import im.fir.sdk.version.AppVersion;
+import ooo.oxo.apps.materialize.BuildConfig;
+import ooo.oxo.apps.materialize.R;
 
 public class UpdateUtil {
 
