@@ -33,8 +33,8 @@ import android.support.annotation.DimenRes;
  */
 public class TransparencyDrawable extends Drawable {
 
-    public static final int COLOR_BACKGROUND = Color.argb(0x05, 0, 0, 0);
-    public static final int COLOR_CELL = Color.argb(0x10, 0, 0, 0);
+    public static final int COLOR_BACKGROUND = Color.argb(0xFF, 0xF0, 0xF0, 0xF0);
+    public static final int COLOR_CELL = Color.argb(0x10, 0x00, 0x00, 0x00);
 
     private final float size;
 

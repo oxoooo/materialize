@@ -66,14 +66,10 @@
             android:id="@+id/compose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:background="?colorPrimary"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="32dp">
 
             <ImageView
                 android:id="@+id/icon"
@@ -129,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:stretchColumns="1">
 
-                <TableRow>
+                <TableRow android:layout_marginTop="16dp">
 
                     <TextView
                         android:layout_marginBottom="16dp"
