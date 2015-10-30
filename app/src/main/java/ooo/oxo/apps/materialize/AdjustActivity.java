@@ -26,7 +26,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -37,6 +36,7 @@ import com.umeng.analytics.MobclickAgent;
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.LinearGradientDrawable;
+import ooo.oxo.apps.materialize.graphics.PaletteUtil;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
 import rx.Observable;
@@ -74,11 +74,8 @@ public class AdjustActivity extends RxAppCompatActivity {
         resolving.subscribe(binding::setApp);
 
         resolving.subscribeOn(Schedulers.computation())
-                .map(app -> Palette.from(app.icon).generate())
-                .map(Palette::getVibrantSwatch)
-                .filter(swatch -> swatch != null)
-                .map(Palette.Swatch::getRgb)
-                .map(ColorDrawable::new)
+                .map(app -> PaletteUtil.findPrimaryColor(app.icon))
+                .filter(vibrant -> vibrant != null)
                 .subscribe(binding::setVibrant);
 
         resolving.subscribeOn(Schedulers.computation())
