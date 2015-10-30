@@ -40,6 +40,22 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
     private static final String TAG = "MainActivity";
 
+    private final Observable<AppInfo> loading = Observable
+            .defer(() -> {
+                Intent intent = new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_LAUNCHER);
+                return Observable.from(getPackageManager().queryIntentActivities(intent, 0));
+            })
+            .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager()))
+            .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
+            .filter(app -> !app.component.getPackageName().startsWith("com.android."))
+            .filter(app -> !app.component.getPackageName().startsWith("com.google."))
+            .filter(app -> !app.component.getPackageName().startsWith("org.cyanogenmod."))
+            .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
+            .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
+            .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."))
+            .cache();
+
     private ObservableArrayList<AppInfo> apps = new ObservableArrayList<>();
 
     @Override
@@ -52,23 +68,9 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         binding.apps.setAdapter(new AppInfoAdapter(this, apps, this));
 
-        Observable
-                .defer(() -> {
-                    Intent intent = new Intent(Intent.ACTION_MAIN)
-                            .addCategory(Intent.CATEGORY_LAUNCHER);
-                    return Observable.from(getPackageManager().queryIntentActivities(intent, 0));
-                })
-                .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager()))
-                .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
-                .filter(app -> !app.component.getPackageName().startsWith("com.android."))
-                .filter(app -> !app.component.getPackageName().startsWith("com.google."))
-                .filter(app -> !app.component.getPackageName().startsWith("org.cyanogenmod."))
-                .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
-                .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
-                .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."))
-                .compose(bindToLifecycle())
-                .subscribeOn(Schedulers.io())
+        loading.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
                 .subscribe(apps::add);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
