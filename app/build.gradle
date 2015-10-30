@@ -97,6 +97,10 @@ android {
         wandoujia {
             manifestPlaceholders = [UMENG_CHANNEL: "Wandoujia"]
         }
+
+        baidu {
+            manifestPlaceholders = [UMENG_CHANNEL: "Baidu"]
+        }
     }
 
     applicationVariants.all { variant ->
