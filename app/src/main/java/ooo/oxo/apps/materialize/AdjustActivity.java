@@ -26,10 +26,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxRadioGroup;
+import com.jakewharton.rxbinding.widget.RxSeekBar;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -53,6 +54,13 @@ public class AdjustActivity extends RxAppCompatActivity {
      */
     private static final int LAUNCHER_SIZE_MIPMAP = 192;
 
+    private final Observable<AppInfo> resolving = Observable
+            .defer(() -> Observable.just((ActivityInfo) getIntent().getParcelableExtra("activity")))
+            .map(activity -> AppInfo.from(activity, getPackageManager()))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .cache();
+
     private AdjustActivityBinding binding;
 
     private ColorDrawable white = new ColorDrawable(Color.WHITE);
@@ -63,24 +71,19 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.adjust_activity);
 
-        Observable<AppInfo> resolving = Observable.just(getIntent())
-                .map(intent -> (ActivityInfo) intent.getParcelableExtra("activity"))
-                .map(activity -> AppInfo.from(activity, getPackageManager()))
-                .cache()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle());
-
-        resolving.subscribe(binding::setApp);
+        resolving.compose(bindToLifecycle())
+                .subscribe(binding::setApp);
 
         resolving.subscribeOn(Schedulers.computation())
                 .map(app -> PaletteUtil.findPrimaryColor(app.icon))
                 .filter(vibrant -> vibrant != null)
+                .compose(bindToLifecycle())
                 .subscribe(binding::setVibrant);
 
         resolving.subscribeOn(Schedulers.computation())
                 .map(app -> LinearGradientDrawable.from(app.icon))
                 .filter(gradient -> gradient != null)
+                .compose(bindToLifecycle())
                 .subscribe(binding::setGradient);
 
         binding.setTransparency(new TransparencyDrawable(
@@ -105,34 +108,23 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         // FIXME: 应该双向绑定
 
-        binding.shape.setOnCheckedChangeListener((group, checkedId) ->
-                binding.setShape(checkedId == R.id.shape_round
-                        ? CompositeDrawable.Shape.ROUND : CompositeDrawable.Shape.SQUARE));
+        RxRadioGroup.checkedChanges(binding.shape)
+                .map(id -> id == R.id.shape_round
+                        ? CompositeDrawable.Shape.ROUND
+                        : CompositeDrawable.Shape.SQUARE)
+                .compose(bindToLifecycle())
+                .subscribe(binding::setShape);
 
-        binding.padding.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    float padding = (progress - seekBar.getMax() / 2f) / 100f;
-
+        RxSeekBar.userChanges(binding.padding)
+                .map(progress -> (progress - binding.padding.getMax() / 2f) / 100f)
+                .compose(bindToLifecycle())
+                .subscribe(padding -> {
                     binding.setPadding(padding);
 
                     if (binding.getGradient() != null) {
                         binding.getGradient().setPadding(padding);
                     }
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        binding.executePendingBindings();
+                });
 
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
@@ -157,7 +149,8 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .flatMap(avoid -> renders)
                 .compose(bindToLifecycle())
                 .subscribe(result -> {
-                    LauncherUtil.installShortcut(this, binding.getApp().component, binding.getApp().label, result);
+                    LauncherUtil.installShortcut(this,
+                            binding.getApp().component, binding.getApp().label, result);
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
                     supportFinishAfterTransition();
                 });
@@ -173,6 +166,13 @@ public class AdjustActivity extends RxAppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("shape", binding.getShape().ordinal());
+        outState.putFloat("padding", binding.getPadding());
     }
 
 }

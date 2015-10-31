@@ -54,6 +54,8 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
             .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
             .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
             .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .cache();
 
     private ObservableArrayList<AppInfo> apps = new ObservableArrayList<>();
@@ -68,9 +70,7 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         binding.apps.setAdapter(new AppInfoAdapter(this, apps, this));
 
-        loading.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle())
+        loading.compose(bindToLifecycle())
                 .subscribe(apps::add);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
