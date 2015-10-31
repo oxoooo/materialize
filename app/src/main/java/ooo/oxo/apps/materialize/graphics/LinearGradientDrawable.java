@@ -20,9 +20,11 @@ package ooo.oxo.apps.materialize.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -66,7 +68,7 @@ public class LinearGradientDrawable extends Drawable {
         final int sampleHeight = height / 12;
 
         final Rect left = new Rect(0, 0, sampleWidth, sampleHeight);
-        final Rect right = new Rect(sampleWidth, 0, sampleHeight * 2, sampleHeight);
+        final Rect right = new Rect(sampleWidth, 0, sampleWidth * 2, sampleHeight);
 
         final Rect sampleTL = new Rect(0, 0, sampleWidth, sampleHeight);
         final Rect sampleTR = new Rect(width - sampleWidth, 0, width, sampleHeight);
@@ -80,14 +82,13 @@ public class LinearGradientDrawable extends Drawable {
 
         Palette start, end;
 
-        int initial = canvas.save(Canvas.ALL_SAVE_FLAG);
-
         canvas.drawBitmap(source, sampleTL, left, null);
         canvas.drawBitmap(source, sampleTR, right, null);
 
         start = Palette.from(sample).generate();
 
-        canvas.restoreToCount(initial);
+        // clear the canvas
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         canvas.drawBitmap(source, sampleBL, left, null);
         canvas.drawBitmap(source, sampleBR, right, null);
