@@ -21,9 +21,13 @@ package ooo.oxo.apps.materialize;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
+
+import ooo.oxo.apps.materialize.util.DisplayMetricsCompat;
 
 /**
  * A wrapper of {@link ActivityInfo}
@@ -36,7 +40,7 @@ public class AppInfo {
 
     public String label;
 
-    public Bitmap icon;
+    public Bitmap icon = null;
 
     private AppInfo() {
     }
@@ -60,11 +64,19 @@ public class AppInfo {
 
         this.label = activityInfo.loadLabel(packageManager).toString();
 
-        Drawable icon = activityInfo.loadIcon(packageManager);
-        if (icon != null && icon instanceof BitmapDrawable) {
-            this.icon = ((BitmapDrawable) icon).getBitmap();
-        } else {
-            this.icon = null;
+        try {
+            Resources resources = packageManager.getResourcesForApplication(
+                    activityInfo.applicationInfo);
+
+            int redId = activityInfo.getIconResource();
+
+            Drawable icon = ResourcesCompat.getDrawableForDensity(
+                    resources, redId, DisplayMetricsCompat.DENSITY_XXXHIGH, null);
+
+            if (icon != null && icon instanceof BitmapDrawable) {
+                this.icon = ((BitmapDrawable) icon).getBitmap();
+            }
+        } catch (PackageManager.NameNotFoundException ignored) {
         }
     }
 
