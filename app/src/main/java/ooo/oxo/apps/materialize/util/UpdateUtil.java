@@ -18,6 +18,7 @@
 
 package ooo.oxo.apps.materialize.util;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,9 +47,12 @@ public class UpdateUtil {
                                         : version.getChangeLog())
                                 .setNegativeButton(R.string.update_cancel, null)
                                 .setPositiveButton(R.string.update_confirm, (dialog, which) -> {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(Uri.parse(version.getUpdateUrl()));
-                                    context.startActivity(intent);
+                                    try {
+                                        context.startActivity(new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse(version.getUpdateUrl())));
+                                    } catch (ActivityNotFoundException e) {
+                                        // 狗带
+                                    }
                                 })
                                 .show();
                     }
