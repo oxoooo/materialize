@@ -31,8 +31,8 @@ android {
 
         targetSdkVersion 23
 
-        versionCode 10400
-        versionName "1.4.0"
+        versionCode 10401
+        versionName "1.4.1"
 
         if (project.hasProperty('FIR_API_TOKEN')) {
             buildConfigField "String", "FIR_API_TOKEN", "\"${FIR_API_TOKEN}\""
