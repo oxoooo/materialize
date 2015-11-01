@@ -47,6 +47,7 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
                 return Observable.from(getPackageManager().queryIntentActivities(intent, 0));
             })
             .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager()))
+            .filter(app -> app != null)
             .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
             .filter(app -> !app.component.getPackageName().startsWith("com.android."))
             .filter(app -> !app.component.getPackageName().startsWith("com.google."))

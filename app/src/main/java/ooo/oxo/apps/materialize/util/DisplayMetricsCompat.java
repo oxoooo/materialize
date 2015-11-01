@@ -24,4 +24,6 @@ public class DisplayMetricsCompat extends DisplayMetrics {
 
     public static final int DENSITY_XXXHIGH = 640;
 
+    public static final int DENSITY_XXHIGH = 480;
+
 }

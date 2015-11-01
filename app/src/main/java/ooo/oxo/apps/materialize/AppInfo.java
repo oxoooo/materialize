@@ -25,7 +25,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 
 import ooo.oxo.apps.materialize.util.DisplayMetricsCompat;
 
@@ -34,7 +37,9 @@ import ooo.oxo.apps.materialize.util.DisplayMetricsCompat;
  */
 public class AppInfo {
 
-    public ActivityInfo activityInfo;
+    private static final String TAG = "AppInfo";
+
+    public final ActivityInfo activityInfo;
 
     public ComponentName component;
 
@@ -42,7 +47,8 @@ public class AppInfo {
 
     public Bitmap icon = null;
 
-    private AppInfo() {
+    private AppInfo(ActivityInfo activityInfo) {
+        this.activityInfo = activityInfo;
     }
 
     /**
@@ -52,32 +58,55 @@ public class AppInfo {
      * @param packageManager A {@link PackageManager} instance to resolve the {@link ActivityInfo}
      * @return An {@link AppInfo} instance with its {@link #label} and {@link #icon} resolved
      */
+    @Nullable
     public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager) {
-        AppInfo app = new AppInfo();
-        app.activityInfo = activityInfo;
-        app.resolve(packageManager);
-        return app;
+        AppInfo app = new AppInfo(activityInfo);
+        return app.resolve(packageManager) ? app : null;
     }
 
-    public void resolve(PackageManager packageManager) {
+    @Nullable
+    private static Drawable getBestDrawable(Resources resources, @DrawableRes int id) {
+        int[] densities = new int[]{
+                DisplayMetricsCompat.DENSITY_XXXHIGH,
+                DisplayMetricsCompat.DENSITY_XXHIGH,
+                DisplayMetricsCompat.DENSITY_XHIGH,
+                DisplayMetricsCompat.DENSITY_HIGH   // 这都没有狗带吧
+        };
+
+        for (int density : densities) {
+            try {
+                return ResourcesCompat.getDrawableForDensity(resources, id, density, null);
+            } catch (Exception ignored) {
+            }
+        }
+
+        return null;
+    }
+
+    public boolean resolve(PackageManager packageManager) {
         this.component = new ComponentName(activityInfo.packageName, activityInfo.name);
 
         this.label = activityInfo.loadLabel(packageManager).toString();
 
+        Resources resources;
+
         try {
-            Resources resources = packageManager.getResourcesForApplication(
-                    activityInfo.applicationInfo);
-
-            int redId = activityInfo.getIconResource();
-
-            Drawable icon = ResourcesCompat.getDrawableForDensity(
-                    resources, redId, DisplayMetricsCompat.DENSITY_XXXHIGH, null);
-
-            if (icon != null && icon instanceof BitmapDrawable) {
-                this.icon = ((BitmapDrawable) icon).getBitmap();
-            }
-        } catch (PackageManager.NameNotFoundException ignored) {
+            resources = packageManager.getResourcesForApplication(activityInfo.applicationInfo);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to get resources from " + activityInfo.applicationInfo.packageName, e);
+            return false;
         }
+
+        Drawable icon = getBestDrawable(resources, activityInfo.getIconResource());
+
+        if (icon == null || !(icon instanceof BitmapDrawable)) {
+            Log.e(TAG, "Failed to get launcher icon for " + activityInfo.applicationInfo.packageName);
+            return false;
+        }
+
+        this.icon = ((BitmapDrawable) icon).getBitmap();
+
+        return true;
     }
 
 }
