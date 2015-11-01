@@ -24,8 +24,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -34,10 +36,11 @@ import com.jakewharton.rxbinding.widget.RxSeekBar;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.HashMap;
+
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
-import ooo.oxo.apps.materialize.graphics.LinearGradientDrawable;
-import ooo.oxo.apps.materialize.graphics.PaletteUtil;
+import ooo.oxo.apps.materialize.graphics.InfiniteDrawable;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
 import rx.Observable;
@@ -75,45 +78,25 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .subscribe(binding::setApp);
 
         resolving.subscribeOn(Schedulers.computation())
-                .map(app -> PaletteUtil.findPrimaryColor(app.icon))
-                .filter(vibrant -> vibrant != null)
+                .map(app -> InfiniteDrawable.from(app.icon))
+                .filter(infinite -> infinite != null)
                 .compose(bindToLifecycle())
-                .subscribe(binding::setVibrant);
-
-        resolving.subscribeOn(Schedulers.computation())
-                .map(app -> LinearGradientDrawable.from(app.icon))
-                .filter(gradient -> gradient != null)
-                .compose(bindToLifecycle())
-                .subscribe(binding::setGradient);
+                .subscribe(binding::setInfinite);
 
         binding.setTransparency(new TransparencyDrawable(
                 getResources(), R.dimen.transparency_grid_size));
 
-        binding.setShape(CompositeDrawable.Shape.SQUARE);
-        binding.setBackground(white);
-
-        binding.colors.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.color_white:
-                    binding.setBackground(white);
-                    break;
-                case R.id.color_vibrant:
-                    binding.setBackground(binding.getVibrant());
-                    break;
-                case R.id.color_gradient:
-                    binding.setBackground(binding.getGradient());
-                    break;
-            }
-        });
-
         // FIXME: 应该双向绑定
 
         RxRadioGroup.checkedChanges(binding.shape)
-                .map(id -> id == R.id.shape_round
-                        ? CompositeDrawable.Shape.ROUND
-                        : CompositeDrawable.Shape.SQUARE)
+                .map(this::mapShape)
                 .compose(bindToLifecycle())
                 .subscribe(binding::setShape);
+
+        RxRadioGroup.checkedChanges(binding.colors)
+                .map(this::mapColor)
+                .compose(bindToLifecycle())
+                .subscribe(binding::setBackground);
 
         RxSeekBar.userChanges(binding.padding)
                 .map(progress -> (progress - binding.padding.getMax() / 2f) / 100f)
@@ -121,8 +104,8 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .subscribe(padding -> {
                     binding.setPadding(padding);
 
-                    if (binding.getGradient() != null) {
-                        binding.getGradient().setPadding(padding);
+                    if (binding.getInfinite() != null) {
+                        binding.getInfinite().setPadding(padding);
                     }
                 });
 
@@ -151,7 +134,14 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .subscribe(result -> {
                     LauncherUtil.installShortcut(this,
                             binding.getApp().component, binding.getApp().label, result);
+
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
+
+                    HashMap<String, String> arguments = new HashMap<>();
+                    arguments.put("shape", binding.getShape().name());
+                    arguments.put("color", mapColorName(binding.colors.getCheckedRadioButtonId()));
+                    MobclickAgent.onEvent(this, "compose", arguments);
+
                     supportFinishAfterTransition();
                 });
     }
@@ -168,11 +158,37 @@ public class AdjustActivity extends RxAppCompatActivity {
         MobclickAgent.onPause(this);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("shape", binding.getShape().ordinal());
-        outState.putFloat("padding", binding.getPadding());
+    private CompositeDrawable.Shape mapShape(@IdRes int radio) {
+        switch (radio) {
+            case R.id.shape_square:
+                return CompositeDrawable.Shape.SQUARE;
+            case R.id.shape_round:
+                return CompositeDrawable.Shape.ROUND;
+            default:
+                return null;
+        }
+    }
+
+    private Drawable mapColor(@IdRes int radio) {
+        switch (radio) {
+            case R.id.color_white:
+                return white;
+            case R.id.color_infinite:
+                return binding.getInfinite();
+            default:
+                return null;
+        }
+    }
+
+    private String mapColorName(@IdRes int radio) {
+        switch (radio) {
+            case R.id.color_white:
+                return "white";
+            case R.id.color_infinite:
+                return "infinite";
+            default:
+                return null;
+        }
     }
 
 }

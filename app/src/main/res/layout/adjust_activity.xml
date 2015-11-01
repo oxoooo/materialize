@@ -40,12 +40,8 @@
             type="android.graphics.drawable.Drawable" />
 
         <variable
-            name="vibrant"
-            type="android.graphics.drawable.Drawable" />
-
-        <variable
-            name="gradient"
-            type="ooo.oxo.apps.materialize.graphics.LinearGradientDrawable" />
+            name="infinite"
+            type="ooo.oxo.apps.materialize.graphics.InfiniteDrawable" />
 
         <variable
             name="transparency"
@@ -141,7 +137,7 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginStart="16dp"
-                        android:checkedButton="@{shape == Shape.ROUND ? @id/shape_round : @id/shape_square}"
+                        android:checkedButton="@+id/shape_square"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -215,19 +211,11 @@
                             android:text="@string/color_white" />
 
                         <RadioButton
-                            android:id="@+id/color_vibrant"
+                            android:id="@+id/color_infinite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:enabled="@{vibrant != null}"
-                            android:text="@string/color_primary" />
-
-                        <RadioButton
-                            android:id="@+id/color_gradient"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:enabled="@{gradient != null}"
+                            android:enabled="@{infinite != null}"
                             android:text="@string/color_gradient" />
 
                     </RadioGroup>

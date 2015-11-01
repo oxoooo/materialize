@@ -38,7 +38,7 @@
 
     <string name="color_white">White</string>
     <string name="color_primary">Primary</string>
-    <string name="color_gradient">Auto fill (beta)</string>
+    <string name="color_gradient">Auto fill</string>
 
     <string name="adjust_ok">Add to launcher</string>
     <string name="adjust_cancel">Cancel</string>
