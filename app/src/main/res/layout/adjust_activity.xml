@@ -28,28 +28,12 @@
             type="ooo.oxo.apps.materialize.AppInfo" />
 
         <variable
-            name="shape"
-            type="ooo.oxo.apps.materialize.graphics.CompositeDrawable.Shape" />
-
-        <variable
-            name="padding"
-            type="float" />
-
-        <variable
-            name="background"
-            type="android.graphics.drawable.Drawable" />
-
-        <variable
-            name="infinite"
-            type="ooo.oxo.apps.materialize.graphics.InfiniteDrawable" />
-
-        <variable
             name="transparency"
             type="android.graphics.drawable.Drawable" />
 
-        <import
-            alias="Shape"
-            type="ooo.oxo.apps.materialize.graphics.CompositeDrawable.Shape" />
+        <variable
+            name="adjust"
+            type="ooo.oxo.apps.materialize.AdjustViewModel" />
 
     </data>
 
@@ -87,9 +71,9 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@{transparency}"
-                app:canvasBackground="@{background}"
-                app:padding="@{padding}"
-                app:shape="@{shape}" />
+                app:canvasBackground="@{adjust.background}"
+                app:padding="@{adjust.padding}"
+                app:shape="@{adjust.shape}" />
 
             <View
                 android:layout_width="24dp"
@@ -103,10 +87,10 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@{transparency}"
-                app:canvasBackground="@{background}"
+                app:canvasBackground="@{adjust.background}"
                 app:image="@{app.icon}"
-                app:padding="@{padding}"
-                app:shape="@{shape}" />
+                app:padding="@{adjust.padding}"
+                app:shape="@{adjust.shape}" />
 
         </LinearLayout>
 
@@ -137,7 +121,8 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginStart="16dp"
-                        android:checkedButton="@+id/shape_square"
+                        android:checkedButton="@{adjust.shapeRadioId}"
+                        android:onCheckedChanged="@{adjust.shapeWatcher}"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -176,8 +161,9 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginStart="16dp"
-                        android:max="@{40 * 2 * 100}"
-                        android:progress="@{(40 + (int) padding) * 100}" />
+                        android:max="@{adjust.paddingMax}"
+                        android:onProgressChanged="@{adjust.paddingWatcher}"
+                        android:progress="@{adjust.paddingValue}" />
 
                 </TableRow>
 
@@ -200,7 +186,8 @@
                         android:layout_marginRight="12dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="6dp"
-                        android:checkedButton="@+id/color_white"
+                        android:checkedButton="@{adjust.backgroundRadioId}"
+                        android:onCheckedChanged="@{adjust.backgroundWatcher}"
                         android:orientation="vertical">
 
                         <RadioButton
@@ -215,7 +202,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:enabled="@{infinite != null}"
+                            android:enabled="@{adjust.infinite != null}"
                             android:text="@string/color_gradient" />
 
                     </RadioGroup>

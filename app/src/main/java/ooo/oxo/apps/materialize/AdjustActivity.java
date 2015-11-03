@@ -22,24 +22,18 @@ import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxRadioGroup;
-import com.jakewharton.rxbinding.widget.RxSeekBar;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
 import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
-import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.InfiniteDrawable;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
@@ -66,13 +60,18 @@ public class AdjustActivity extends RxAppCompatActivity {
 
     private AdjustActivityBinding binding;
 
-    private ColorDrawable white = new ColorDrawable(Color.WHITE);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.adjust_activity);
+
+        AdjustViewModel adjust = new AdjustViewModel();
+
+        binding.setAdjust(adjust);
+
+        binding.setTransparency(new TransparencyDrawable(
+                getResources(), R.dimen.transparency_grid_size));
 
         resolving.compose(bindToLifecycle())
                 .subscribe(binding::setApp);
@@ -81,33 +80,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .map(app -> InfiniteDrawable.from(app.icon))
                 .filter(infinite -> infinite != null)
                 .compose(bindToLifecycle())
-                .subscribe(binding::setInfinite);
-
-        binding.setTransparency(new TransparencyDrawable(
-                getResources(), R.dimen.transparency_grid_size));
-
-        // FIXME: 应该双向绑定
-
-        RxRadioGroup.checkedChanges(binding.shape)
-                .map(this::mapShape)
-                .compose(bindToLifecycle())
-                .subscribe(binding::setShape);
-
-        RxRadioGroup.checkedChanges(binding.colors)
-                .map(this::mapColor)
-                .compose(bindToLifecycle())
-                .subscribe(binding::setBackground);
-
-        RxSeekBar.userChanges(binding.padding)
-                .map(progress -> (progress - binding.padding.getMax() / 2f) / 100f)
-                .compose(bindToLifecycle())
-                .subscribe(padding -> {
-                    binding.setPadding(padding);
-
-                    if (binding.getInfinite() != null) {
-                        binding.getInfinite().setPadding(padding);
-                    }
-                });
+                .subscribe(adjust::setInfinite);
 
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
@@ -138,7 +111,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
 
                     HashMap<String, String> arguments = new HashMap<>();
-                    arguments.put("shape", binding.getShape().name());
+                    arguments.put("shape", adjust.getShape().name());
                     arguments.put("color", mapColorName(binding.colors.getCheckedRadioButtonId()));
                     MobclickAgent.onEvent(this, "compose", arguments);
 
@@ -156,28 +129,6 @@ public class AdjustActivity extends RxAppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
-    }
-
-    private CompositeDrawable.Shape mapShape(@IdRes int radio) {
-        switch (radio) {
-            case R.id.shape_square:
-                return CompositeDrawable.Shape.SQUARE;
-            case R.id.shape_round:
-                return CompositeDrawable.Shape.ROUND;
-            default:
-                return null;
-        }
-    }
-
-    private Drawable mapColor(@IdRes int radio) {
-        switch (radio) {
-            case R.id.color_white:
-                return white;
-            case R.id.color_infinite:
-                return binding.getInfinite();
-            default:
-                return null;
-        }
     }
 
     private String mapColorName(@IdRes int radio) {
