@@ -1,0 +1,48 @@
+<!--
+  ~ Materialize - Materialize all those not material
+  ~ Copyright (C) 2015  XiNGRZ <xxx@oxo.ooo>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="app_name">Materialize</string>
+
+    <string name="about">關於</string>
+    <string name="version" formatted="false">版本 %s (%s)</string>
+    <string name="fork_me_on_github">訪問本專案位於 GitHub 的源代碼</string>
+    <string name="libraries_used">本專案使用了下列開源庫</string>
+
+    <string name="update_available">新版本 %s 現已可用</string>
+    <string name="update_confirm">立即下載</string>
+    <string name="update_cancel">取消</string>
+
+    <string name="adjust_label_shape">形狀</string>
+    <string name="adjust_label_padding">邊距</string>
+    <string name="adjust_label_color">顏色</string>
+
+    <string name="shape_square">方形</string>
+    <string name="shape_round">圓形</string>
+
+    <string name="color_white">白色</string>
+    <string name="color_gradient">智能填充</string>
+
+    <string name="adjust_ok">添加到主屏幕</string>
+    <string name="adjust_cancel">取消</string>
+
+    <string name="fail_stencil">模板載入失敗</string>
+    <string name="done">圖標已添加到主屏幕</string>
+
+</resources>

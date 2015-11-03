@@ -40,10 +40,10 @@
     <string name="color_primary">Primary</string>
     <string name="color_gradient">Auto fill</string>
 
-    <string name="adjust_ok">Add to launcher</string>
+    <string name="adjust_ok">Add to home screen</string>
     <string name="adjust_cancel">Cancel</string>
 
     <string name="fail_stencil">Failed to load stencils</string>
-    <string name="done">Icon is added to your launcher</string>
+    <string name="done">Icon is added to your home screen</string>
 
 </resources>
