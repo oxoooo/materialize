@@ -60,15 +60,15 @@ public class AdjustActivity extends RxAppCompatActivity {
 
     private AdjustActivityBinding binding;
 
+    private AdjustViewModel adjustment = new AdjustViewModel();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.adjust_activity);
 
-        AdjustViewModel adjust = new AdjustViewModel();
-
-        binding.setAdjust(adjust);
+        binding.setAdjust(adjustment);
 
         binding.setTransparency(new TransparencyDrawable(
                 getResources(), R.dimen.transparency_grid_size));
@@ -80,15 +80,17 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .map(app -> InfiniteDrawable.from(app.icon))
                 .filter(infinite -> infinite != null)
                 .compose(bindToLifecycle())
-                .subscribe(adjust::setInfinite);
+                .subscribe(adjustment::setInfinite);
 
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
-                .subscribe(avoid -> supportFinishAfterTransition());
+                .subscribe(avoid -> {
+                    setResult(RESULT_CANCELED);
+                    supportFinishAfterTransition();
+                });
 
-        int size = Build.VERSION.SDK_INT < 18
-                ? getResources().getDimensionPixelSize(R.dimen.launcher_size)
-                : LAUNCHER_SIZE_MIPMAP;
+        int size = SUPPORT_MIPMAP ? LAUNCHER_SIZE_MIPMAP
+                : getResources().getDimensionPixelSize(R.dimen.launcher_size);
 
         Observable<Bitmap> renders = Observable.just(binding.result.getComposite())
                 .compose(bindToLifecycle())
@@ -110,11 +112,9 @@ public class AdjustActivity extends RxAppCompatActivity {
 
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
 
-                    HashMap<String, String> arguments = new HashMap<>();
-                    arguments.put("shape", adjust.getShape().name());
-                    arguments.put("color", mapColorName(binding.colors.getCheckedRadioButtonId()));
-                    MobclickAgent.onEvent(this, "compose", arguments);
+                    MobclickAgent.onEvent(this, "compose", makeEvent());
 
+                    setResult(RESULT_OK);
                     supportFinishAfterTransition();
                 });
     }
@@ -129,6 +129,13 @@ public class AdjustActivity extends RxAppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    private HashMap<String, String> makeEvent() {
+        HashMap<String, String> event = new HashMap<>();
+        event.put("shape", adjustment.getShape().name());
+        event.put("color", mapColorName(binding.colors.getCheckedRadioButtonId()));
+        return event;
     }
 
     private String mapColorName(@IdRes int radio) {

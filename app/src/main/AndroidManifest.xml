@@ -26,8 +26,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!--suppress DeprecatedClassUsageInspection -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:name=".MaterializeApplication"
@@ -50,10 +48,12 @@
             android:value="3c2e5d966debe118c74554c1fef5d7a3" />
 
         <activity android:name=".MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity android:name=".AboutActivity" />
