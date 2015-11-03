@@ -20,7 +20,6 @@ package ooo.oxo.apps.materialize;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayList;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -59,7 +58,7 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
             .observeOn(AndroidSchedulers.mainThread())
             .cache();
 
-    private ObservableArrayList<AppInfo> apps = new ObservableArrayList<>();
+    private AppInfoAdapter apps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +68,19 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         setSupportActionBar(binding.toolbar);
 
-        binding.apps.setAdapter(new AppInfoAdapter(this, apps, this));
+        binding.apps.setAdapter(apps = new AppInfoAdapter(this, this));
 
         loading.compose(bindToLifecycle())
-                .subscribe(apps::add);
+                .doOnSubscribe(apps.data::beginBatchedUpdates)
+                .doOnCompleted(apps.data::endBatchedUpdates)
+                .subscribe(apps.data::add);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
     }
 
     @Override
     public void onItemClick(AppInfoAdapter.ViewHolder holder) {
-        AppInfo app = apps.get(holder.getAdapterPosition());
+        AppInfo app = apps.data.get(holder.getAdapterPosition());
 
         Intent intent = new Intent(this, AdjustActivity.class);
         intent.putExtra("activity", app.activityInfo);

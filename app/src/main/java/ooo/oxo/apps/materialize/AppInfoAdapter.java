@@ -19,18 +19,21 @@
 package ooo.oxo.apps.materialize;
 
 import android.content.Context;
-import android.databinding.ObservableList;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import ooo.oxo.apps.materialize.databinding.MainAppItemBinding;
+import ooo.oxo.apps.materialize.util.SortedListAdapter;
 import ooo.oxo.library.databinding.support.widget.BindingRecyclerView;
 
-public class AppInfoAdapter extends BindingRecyclerView.ListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
+public class AppInfoAdapter extends SortedListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
 
+    private final LayoutInflater inflater;
     private final OnItemClickListener listener;
 
-    public AppInfoAdapter(Context context, ObservableList<AppInfo> data, OnItemClickListener listener) {
-        super(context, data);
+    public AppInfoAdapter(Context context, OnItemClickListener listener) {
+        super(AppInfo.class);
+        this.inflater = LayoutInflater.from(context);
         this.listener = listener;
     }
 
@@ -42,6 +45,21 @@ public class AppInfoAdapter extends BindingRecyclerView.ListAdapter<AppInfo, App
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.binding.setApp(data.get(position));
+    }
+
+    @Override
+    protected int compare(AppInfo o1, AppInfo o2) {
+        return o1.label.compareTo(o2.label);
+    }
+
+    @Override
+    protected boolean areContentsTheSame(AppInfo oldItem, AppInfo newItem) {
+        return oldItem.label.equals(newItem.label);
+    }
+
+    @Override
+    protected boolean areItemsTheSame(AppInfo item1, AppInfo item2) {
+        return item1.component.equals(item2.component);
     }
 
     public interface OnItemClickListener {
