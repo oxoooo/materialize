@@ -33,48 +33,57 @@ import ooo.oxo.apps.materialize.R;
 
 public class UpdateUtil {
 
-    @SuppressWarnings({"PointlessBooleanExpression", "ConstantConditions"})
     public static void checkForUpdateAndPrompt(Context context) {
-        if (!BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.FIR_API_TOKEN)) {
-            FIR.checkForUpdateInFIR(BuildConfig.FIR_API_TOKEN, new VersionCheckCallback() {
-                @Override
-                public void onSuccess(AppVersion version, boolean b) {
-                    if (version.getVersionCode() > BuildConfig.VERSION_CODE) {
-                        new AlertDialog.Builder(context)
-                                .setTitle(context.getString(R.string.update_available, version.getVersionName()))
-                                .setMessage(TextUtils.isEmpty(version.getChangeLog())
-                                        ? null
-                                        : version.getChangeLog())
-                                .setNegativeButton(R.string.update_cancel, null)
-                                .setPositiveButton(R.string.update_confirm, (dialog, which) -> {
-                                    try {
-                                        context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse(version.getUpdateUrl())));
-                                    } catch (ActivityNotFoundException e) {
-                                        // 狗带
-                                    }
-                                })
-                                .show();
-                    }
-                }
-
-                @Override
-                public void onFail(String s, int i) {
-                }
-
-                @Override
-                public void onError(Exception e) {
-                }
-
-                @Override
-                public void onStart() {
-                }
-
-                @Override
-                public void onFinish() {
-                }
-            });
+        if (BuildConfig.DEBUG) {
+            return;
         }
+
+        if (TextUtils.isEmpty(BuildConfig.FIR_API_TOKEN)) {
+            return;
+        }
+
+        FIR.checkForUpdateInFIR(BuildConfig.FIR_API_TOKEN, new VersionCheckCallback() {
+            @Override
+            public void onSuccess(AppVersion version, boolean b) {
+                if (version.getVersionCode() > BuildConfig.VERSION_CODE) {
+                    promptUpdate(context, version);
+                }
+            }
+
+            @Override
+            public void onFail(String s, int i) {
+            }
+
+            @Override
+            public void onError(Exception e) {
+            }
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        });
+    }
+
+    private static void promptUpdate(Context context, AppVersion version) {
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.update_available, version.getVersionName()))
+                .setMessage(TextUtils.isEmpty(version.getChangeLog())
+                        ? null
+                        : version.getChangeLog())
+                .setNegativeButton(R.string.update_cancel, null)
+                .setPositiveButton(R.string.update_confirm, (dialog, which) -> {
+                    try {
+                        context.startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(version.getUpdateUrl())));
+                    } catch (ActivityNotFoundException e) {
+                        // 狗带
+                    }
+                })
+                .show();
     }
 
 }

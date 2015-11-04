@@ -29,7 +29,11 @@ public class MaterializeApplication extends Application {
     @Override
     public void onCreate() {
         MobclickAgent.setCatchUncaughtExceptions(false);
-        FIR.init(this);
+
+        if (!BuildConfig.DEBUG) {
+            FIR.init(this);
+        }
+
         super.onCreate();
     }
 
