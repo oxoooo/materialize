@@ -54,6 +54,7 @@ public class AdjustActivity extends RxAppCompatActivity {
     private final Observable<AppInfo> resolving = Observable
             .defer(() -> Observable.just((ActivityInfo) getIntent().getParcelableExtra("activity")))
             .map(activity -> AppInfo.from(activity, getPackageManager()))
+            .filter(app -> app != null)
             .filter(AppInfo::resolveIcon)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

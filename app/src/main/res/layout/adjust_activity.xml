@@ -16,6 +16,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<!--suppress AndroidUnknownAttribute -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -239,6 +240,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
+                android:enabled="@{app != null}"
                 android:minWidth="64dp"
                 android:paddingEnd="12dp"
                 android:paddingStart="12dp"

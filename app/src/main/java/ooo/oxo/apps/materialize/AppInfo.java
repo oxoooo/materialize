@@ -98,6 +98,7 @@ public class AppInfo {
 
         if (!resolveIconValue()) {
             Log.e(TAG, "Failed to resolve icon drawable for " + app);
+            return false;
         }
 
         return true;
