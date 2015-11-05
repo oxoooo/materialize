@@ -22,6 +22,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.RequestManager;
+
 import ooo.oxo.apps.materialize.databinding.MainAppItemBinding;
 import ooo.oxo.apps.materialize.util.SortedListAdapter;
 import ooo.oxo.library.databinding.support.widget.BindingRecyclerView;
@@ -29,11 +31,13 @@ import ooo.oxo.library.databinding.support.widget.BindingRecyclerView;
 public class AppInfoAdapter extends SortedListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
+    private final RequestManager requestManager;
     private final OnItemClickListener listener;
 
-    public AppInfoAdapter(Context context, OnItemClickListener listener) {
+    public AppInfoAdapter(Context context, RequestManager requestManager, OnItemClickListener listener) {
         super(AppInfo.class);
         this.inflater = LayoutInflater.from(context);
+        this.requestManager = requestManager;
         this.listener = listener;
     }
 
@@ -44,7 +48,9 @@ public class AppInfoAdapter extends SortedListAdapter<AppInfo, AppInfoAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.binding.setApp(data.get(position));
+        AppInfo app = data.get(position);
+        holder.binding.setApp(app);
+        requestManager.load(app).into(holder.binding.icon);
     }
 
     @Override

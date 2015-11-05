@@ -30,8 +30,8 @@ android {
 
         targetSdkVersion 23
 
-        versionCode 10403
-        versionName "1.4.3"
+        versionCode 10404
+        versionName "1.4.4"
 
         buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
         buildConfigField "String", "FIR_API_TOKEN",
@@ -128,6 +128,8 @@ android {
 dependencies {
     compile 'com.android.support:design:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
+
+    compile 'com.github.bumptech.glide:glide:3.6.1'
 
     compile 'io.reactivex:rxandroid:1.0.1'
 

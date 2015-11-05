@@ -47,6 +47,10 @@
             android:name="BUG_HD_SDK_GENERAL_KEY"
             android:value="3c2e5d966debe118c74554c1fef5d7a3" />
 
+        <meta-data
+            android:name="ooo.oxo.apps.materialize.io.DrawableGlideMode"
+            android:value="GlideModule" />
+
         <activity android:name=".MainActivity">
 
             <intent-filter>

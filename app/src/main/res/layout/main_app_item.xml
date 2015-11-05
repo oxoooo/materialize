@@ -17,7 +17,6 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -49,7 +48,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                app:imageBitmap="@{app.icon}"
+                android:scaleType="centerInside"
                 tools:ignore="ContentDescription"
                 tools:src="@mipmap/ic_launcher" />
 

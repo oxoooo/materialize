@@ -26,6 +26,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -68,11 +69,9 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         setSupportActionBar(binding.toolbar);
 
-        binding.apps.setAdapter(apps = new AppInfoAdapter(this, this));
+        binding.apps.setAdapter(apps = new AppInfoAdapter(this, Glide.with(this), this));
 
         loading.compose(bindToLifecycle())
-                .doOnSubscribe(apps.data::beginBatchedUpdates)
-                .doOnCompleted(apps.data::endBatchedUpdates)
                 .subscribe(apps.data::add);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
