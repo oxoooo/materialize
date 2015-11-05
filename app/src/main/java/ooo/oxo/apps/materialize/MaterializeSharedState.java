@@ -18,31 +18,30 @@
 
 package ooo.oxo.apps.materialize;
 
-import android.app.Application;
+import android.content.Context;
 
-import com.umeng.analytics.MobclickAgent;
+import ooo.oxo.apps.materialize.util.LauncherUtil;
 
-import java.util.HashMap;
+public class MaterializeSharedState {
 
-import im.fir.sdk.FIR;
+    private static MaterializeSharedState instance;
 
-public class MaterializeApplication extends Application {
+    private final String launcher;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    private MaterializeSharedState(Context context) {
+        this.launcher = LauncherUtil.resolveLauncherApp(context);
+    }
 
-        MobclickAgent.setCatchUncaughtExceptions(false);
+    static void init(Context context) {
+        instance = new MaterializeSharedState(context);
+    }
 
-        if (BuildConfig.FIR_ENABLED) {
-            FIR.init(this);
-        }
+    public static MaterializeSharedState getInstance() {
+        return instance;
+    }
 
-        MaterializeSharedState.init(this);
-
-        HashMap<String, String> event = new HashMap<>();
-        event.put("launcher", MaterializeSharedState.getInstance().getLauncher());
-        MobclickAgent.onEvent(this, "launcher", event);
+    public String getLauncher() {
+        return launcher;
     }
 
 }

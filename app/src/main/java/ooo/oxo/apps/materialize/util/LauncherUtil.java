@@ -20,7 +20,9 @@ package ooo.oxo.apps.materialize.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 
 public class LauncherUtil {
 
@@ -30,6 +32,17 @@ public class LauncherUtil {
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
         context.sendBroadcast(intent);
+    }
+
+    @Nullable
+    public static String resolveLauncherApp(Context context) {
+        try {
+            return context.getPackageManager().resolveActivity(
+                    new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),
+                    PackageManager.MATCH_DEFAULT_ONLY).activityInfo.applicationInfo.packageName;
+        } catch (Exception e) {
+            return null;    // 日了狗了
+        }
     }
 
 }

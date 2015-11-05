@@ -30,14 +30,12 @@ android {
 
         targetSdkVersion 23
 
-        versionCode 10402
-        versionName "1.4.2"
+        versionCode 10403
+        versionName "1.4.3"
 
-        if (project.hasProperty('FIR_API_TOKEN')) {
-            buildConfigField "String", "FIR_API_TOKEN", "\"${FIR_API_TOKEN}\""
-        } else {
-            buildConfigField "String", "FIR_API_TOKEN", "null"
-        }
+        buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
+        buildConfigField "String", "FIR_API_TOKEN",
+                project.hasProperty('FIR_API_TOKEN') ? "\"${FIR_API_TOKEN}\"" : "null"
     }
 
     dataBinding {

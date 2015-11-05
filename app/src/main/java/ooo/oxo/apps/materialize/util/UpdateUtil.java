@@ -34,11 +34,7 @@ import ooo.oxo.apps.materialize.R;
 public class UpdateUtil {
 
     public static void checkForUpdateAndPrompt(Context context) {
-        if (BuildConfig.DEBUG) {
-            return;
-        }
-
-        if (TextUtils.isEmpty(BuildConfig.FIR_API_TOKEN)) {
+        if (!BuildConfig.FIR_ENABLED) {
             return;
         }
 
