@@ -16,10 +16,12 @@
 
 # support library
 -keep class android.support.v7.widget.LinearLayoutManager { *; }
--keep class android.support.design.widget.AppBarLayout$ScrollingViewBehavior { *; }
 
 # data binding
 -keep class ooo.oxo.apps.materialize.databinding.** { *; }
+
+# glide
+-keep class ooo.oxo.apps.materialize.io.DrawableGlideMode { *; }
 
 # all in all
 -keepnames class * { *; }
