@@ -17,7 +17,6 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
@@ -39,6 +38,10 @@ android {
         } else {
             buildConfigField "String", "FIR_API_TOKEN", "null"
         }
+    }
+
+    dataBinding {
+        enabled = true
     }
 
     compileOptions {
@@ -100,6 +103,14 @@ android {
 
         baidu {
             manifestPlaceholders = [UMENG_CHANNEL: "Baidu"]
+        }
+
+        tencent {
+            manifestPlaceholders = [UMENG_CHANNEL: "Tencent"]
+        }
+
+        qihoo {
+            manifestPlaceholders = [UMENG_CHANNEL: "360"]
         }
     }
 

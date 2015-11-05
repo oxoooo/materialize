@@ -1,3 +1,6 @@
+# retrolambda
+-dontwarn java.lang.invoke.*
+
 # okhttp
 -dontwarn okio.**
 
