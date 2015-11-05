@@ -19,6 +19,7 @@
 package ooo.oxo.apps.materialize;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -107,6 +108,10 @@ public class AppInfo {
         this.icon = ((BitmapDrawable) icon).getBitmap();
 
         return true;
+    }
+
+    public Intent getIntent() {
+        return new Intent().setComponent(component).setFlags(activityInfo.flags);
     }
 
 }

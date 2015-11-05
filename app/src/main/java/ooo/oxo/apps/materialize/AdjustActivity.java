@@ -108,7 +108,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                 .compose(bindToLifecycle())
                 .subscribe(result -> {
                     LauncherUtil.installShortcut(this,
-                            binding.getApp().component, binding.getApp().label, result);
+                            binding.getApp().getIntent(), binding.getApp().label, result);
 
                     Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
 

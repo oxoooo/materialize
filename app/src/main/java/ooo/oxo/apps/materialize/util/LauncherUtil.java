@@ -18,16 +18,15 @@
 
 package ooo.oxo.apps.materialize.util;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
 public class LauncherUtil {
 
-    public static void installShortcut(Context context, ComponentName component, String label, Bitmap icon) {
+    public static void installShortcut(Context context, Intent shortcut, String label, Bitmap icon) {
         Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent().setComponent(component));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcut);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
         context.sendBroadcast(intent);
