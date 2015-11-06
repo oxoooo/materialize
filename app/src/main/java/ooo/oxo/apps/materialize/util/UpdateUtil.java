@@ -34,7 +34,8 @@ import ooo.oxo.apps.materialize.R;
 public class UpdateUtil {
 
     public static void checkForUpdateAndPrompt(Context context) {
-        if (!BuildConfig.FIR_ENABLED) {
+        //noinspection PointlessBooleanExpression
+        if (!BuildConfig.FIR_OTA_ENABLED) {
             return;
         }
 

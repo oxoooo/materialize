@@ -36,6 +36,8 @@ android {
         buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
         buildConfigField "String", "FIR_API_TOKEN",
                 project.hasProperty('FIR_API_TOKEN') ? "\"${FIR_API_TOKEN}\"" : "null"
+
+        buildConfigField "boolean", "FIR_OTA_ENABLED", "FIR_ENABLED"
     }
 
     dataBinding {
@@ -93,6 +95,7 @@ android {
 
         google {
             manifestPlaceholders = [UMENG_CHANNEL: "Google"]
+            buildConfigField "boolean", "FIR_OTA_ENABLED", "false"
         }
 
         wandoujia {
@@ -101,6 +104,7 @@ android {
 
         baidu {
             manifestPlaceholders = [UMENG_CHANNEL: "Baidu"]
+            buildConfigField "boolean", "FIR_OTA_ENABLED", "false"
         }
 
         tencent {
