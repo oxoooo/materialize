@@ -40,5 +40,5 @@ Join our Transifex project: https://www.transifex.com/oxo/android-materialize/
 
 [license badge]: https://img.shields.io/github/license/oxoooo/materialize.svg?style=flat-square
 
-[issues badge]: https://img.shields.io/github/issues/oxoooo/pull-back-layout.svg?style=flat-square
-[issues link]: https://github.com/oxoooo/pull-back-layout/issues
+[issues badge]: https://img.shields.io/github/issues/oxoooo/materialize.svg?style=flat-square
+[issues link]: https://github.com/oxoooo/materialize/issues
