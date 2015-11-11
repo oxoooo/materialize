@@ -120,7 +120,7 @@ public class InfiniteDrawable extends Drawable {
 
             for (int x = source.getWidth() - 1; x > source.getWidth() / 2; x--) {
                 int i = source.getPixel(x, y);
-                if (Color.alpha(i) == 0xFF) {
+                if (isOpaque(i)) {
                     color = i;
                     break;
                 }
