@@ -19,6 +19,7 @@
 <resources>
 
     <string name="app_name">Materialize</string>
+    <string name="app_name_debug" translatable="false">Materialize (debug)</string>
 
     <string name="about">About</string>
     <string name="version" formatted="false">Version %s (%s)</string>

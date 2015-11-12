@@ -38,6 +38,8 @@ android {
                 project.hasProperty('FIR_API_TOKEN') ? "\"${FIR_API_TOKEN}\"" : "null"
 
         buildConfigField "boolean", "FIR_OTA_ENABLED", "FIR_ENABLED"
+
+        manifestPlaceholders = [APP_NAME: '@string/app_name']
     }
 
     dataBinding {
@@ -67,6 +69,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            manifestPlaceholders = [APP_NAME: '@string/app_name_debug']
         }
 
         release {

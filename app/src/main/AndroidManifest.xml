@@ -31,7 +31,7 @@
         android:name=".MaterializeApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${APP_NAME}"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
