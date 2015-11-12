@@ -32,9 +32,7 @@
 
     <style name="DarkToolbarThemeOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="ToolbarTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">sans-serif</item>
-    </style>
+    <style name="ToolbarTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
     <style name="AdjustTheme" parent="Theme.AppCompat.Light.Dialog.MinWidth">
         <item name="colorPrimary">@color/primary</item>
