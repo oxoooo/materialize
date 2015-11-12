@@ -1,0 +1,47 @@
+<!--
+  ~ Materialize - Materialize all those not material
+  ~ Copyright (C) 2015  XiNGRZ <xxx@oxo.ooo>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/main_activity">
+
+    <EditText
+        android:id="@+id/keyword"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
+        android:background="@android:color/transparent"
+        android:hint="@string/search_hint"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textSize="16sp"
+        android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_close_24dp"
+        tools:ignore="ContentDescription" />
+
+</android.support.v7.widget.CardView>

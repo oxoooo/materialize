@@ -20,6 +20,9 @@
 
     <string name="app_name">靓晒</string>
 
+    <string name="search">搜索</string>
+    <string name="search_hint">搜索应用…</string>
+
     <string name="about">关于</string>
     <string name="version" formatted="false">版本 %s (%s)</string>
     <string name="fork_me_on_github">访问项目在 GitHub 上的源代码</string>

@@ -16,15 +16,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-
-    <dimen name="launcher_size">48dp</dimen>
-
-    <dimen name="transparency_grid_size">4dp</dimen>
-
-    <dimen name="default_padding_square">6dp</dimen>
-    <dimen name="default_padding_round">2dp</dimen>
-
-    <dimen name="reveal_right">88dp</dimen>
-
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M10,18h4v-2h-4v2zM3,6v2h18V6H3zm3,7h12v-2H6v2z"/>
+</vector>

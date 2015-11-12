@@ -25,17 +25,18 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 
 import ooo.oxo.apps.materialize.databinding.MainAppItemBinding;
-import ooo.oxo.apps.materialize.util.SortedListAdapter;
+import ooo.oxo.apps.materialize.util.FilteredSortedListAdapter;
 import ooo.oxo.library.databinding.support.widget.BindingRecyclerView;
 
-public class AppInfoAdapter extends SortedListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
+public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
     private final RequestManager requestManager;
     private final OnItemClickListener listener;
 
-    public AppInfoAdapter(Context context, RequestManager requestManager, OnItemClickListener listener) {
-        super(AppInfo.class);
+    public AppInfoAdapter(Context context, RequestManager requestManager,
+                          FilteredSortedList.Filter<AppInfo> filter, OnItemClickListener listener) {
+        super(AppInfo.class, filter);
         this.inflater = LayoutInflater.from(context);
         this.requestManager = requestManager;
         this.listener = listener;

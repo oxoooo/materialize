@@ -20,6 +20,9 @@
 
     <string name="app_name">Materialize</string>
 
+    <string name="search">搜尋</string>
+    <string name="search_hint">搜尋應用…</string>
+
     <string name="about">關於</string>
     <string name="version" formatted="false">版本 %s (%s)</string>
     <string name="fork_me_on_github">訪問本專案位於 GitHub 的源代碼</string>

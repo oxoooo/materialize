@@ -21,6 +21,9 @@
     <string name="app_name">Materialize</string>
     <string name="app_name_debug" translatable="false">Materialize (debug)</string>
 
+    <string name="search">Search</string>
+    <string name="search_hint">Search for app…</string>
+
     <string name="about">About</string>
     <string name="version" formatted="false">Version %s (%s)</string>
     <string name="fork_me_on_github">Fork me on GitHub</string>

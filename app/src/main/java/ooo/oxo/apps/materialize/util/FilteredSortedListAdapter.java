@@ -18,31 +18,32 @@
 
 package ooo.oxo.apps.materialize.util;
 
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
 
-public abstract class SortedListAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+import ooo.oxo.apps.materialize.FilteredSortedList;
 
-    public final SortedList<T> data;
+public abstract class FilteredSortedListAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    public SortedListAdapter(Class<T> type) {
-        this.data = new SortedList<>(type, new SortedListAdapterCallback<T>(this) {
+    public final FilteredSortedList<T> data;
+
+    public FilteredSortedListAdapter(Class<T> type, FilteredSortedList.Filter<T> filter) {
+        this.data = new FilteredSortedList<>(type, new SortedListAdapterCallback<T>(this) {
             @Override
             public int compare(T o1, T o2) {
-                return SortedListAdapter.this.compare(o1, o2);
+                return FilteredSortedListAdapter.this.compare(o1, o2);
             }
 
             @Override
             public boolean areContentsTheSame(T oldItem, T newItem) {
-                return SortedListAdapter.this.areContentsTheSame(oldItem, newItem);
+                return FilteredSortedListAdapter.this.areContentsTheSame(oldItem, newItem);
             }
 
             @Override
             public boolean areItemsTheSame(T item1, T item2) {
-                return SortedListAdapter.this.areItemsTheSame(item1, item2);
+                return FilteredSortedListAdapter.this.areItemsTheSame(item1, item2);
             }
-        });
+        }, filter);
     }
 
     @Override

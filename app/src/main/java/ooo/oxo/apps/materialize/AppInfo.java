@@ -130,4 +130,9 @@ public class AppInfo {
         return new Intent().setComponent(component).setFlags(activityInfo.flags);
     }
 
+    @Override
+    public String toString() {
+        return component == null ? null : component.toString();
+    }
+
 }

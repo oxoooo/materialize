@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -36,7 +37,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.OnItemClickListener {
+public class MainActivity extends RxAppCompatActivity
+        implements AppInfoAdapter.OnItemClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -61,6 +63,8 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
     private AppInfoAdapter apps;
 
+    private SearchPanelController searchPanelController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +73,19 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
 
         setSupportActionBar(binding.toolbar);
 
-        binding.apps.setAdapter(apps = new AppInfoAdapter(this, Glide.with(this), this));
+        searchPanelController = new SearchPanelController(binding.searchBar);
+
+        SearchMatcher searchMatcher = new SearchMatcher(() -> searchPanelController.getKeyword().getText().toString());
+
+        binding.apps.setAdapter(apps = new AppInfoAdapter(this, Glide.with(this),
+                searchMatcher, this));
+
+        RxTextView.afterTextChangeEvents(searchPanelController.getKeyword())
+                .compose(bindToLifecycle())
+                .subscribe(avoid -> apps.data.applyFilter());
 
         loading.compose(bindToLifecycle())
-                .subscribe(apps.data::add);
+                .subscribe(apps.data::addWithIndex);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
     }
@@ -114,8 +127,18 @@ public class MainActivity extends RxAppCompatActivity implements AppInfoAdapter.
             case R.id.about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
+            case R.id.search:
+                searchPanelController.open();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchPanelController.onBackPressed()) {
+            super.onBackPressed();
         }
     }
 

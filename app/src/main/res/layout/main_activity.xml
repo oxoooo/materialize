@@ -21,35 +21,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/apps"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:scrollbars="vertical"
-            app:layoutManager="LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:spanCount="2"
-            tools:padding="8dp" />
+            android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/DarkToolbarThemeOverlay">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/apps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:spanCount="2"
+                tools:padding="8dp" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:title="@string/app_name" />
+                android:theme="@style/DarkToolbarThemeOverlay">
 
-        </android.support.design.widget.AppBarLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways|snap">
 
-    </android.support.design.widget.CoordinatorLayout>
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:title="@string/app_name" />
+
+                    <FrameLayout
+                        android:id="@+id/search_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:padding="4dp"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light"
+                        android:visibility="invisible"
+                        tools:visibility="visible">
+
+                        <include layout="@layout/search_bar" />
+
+                    </FrameLayout>
+
+                </FrameLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </FrameLayout>
 
 </layout>
