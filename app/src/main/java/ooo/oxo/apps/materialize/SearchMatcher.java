@@ -19,7 +19,6 @@
 package ooo.oxo.apps.materialize;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
@@ -62,8 +61,7 @@ public class SearchMatcher implements FilteredSortedList.Filter<AppInfo> {
         if (pinyinCache.containsKey(app.label)) {
             pinyin = pinyinCache.get(app.label);
         } else {
-            pinyin = new Pinyin(PinyinHelper.convertToPinyinString(
-                    app.label.trim().toLowerCase(), " ", PinyinFormat.WITHOUT_TONE).split(" "));
+            pinyin = Pinyin.from(app.label);
             pinyinCache.put(app.label, pinyin);
         }
 
@@ -84,23 +82,32 @@ public class SearchMatcher implements FilteredSortedList.Filter<AppInfo> {
 
     }
 
-    public class Pinyin {
+    public static class Pinyin {
 
         public final String pinyinLong;
 
         public final String pinyinShort;
 
-        public Pinyin(String[] source) {
+        private Pinyin(String[] source) {
             StringBuilder builderLong = new StringBuilder();
             StringBuilder builderShort = new StringBuilder();
 
             for (String s : source) {
-                builderLong.append(s);
-                builderShort.append(s.charAt(0));
+                s = s.trim();
+                if (TextUtils.isGraphic(s)) {
+                    builderLong.append(s);
+                    builderShort.append(s.charAt(0));
+                }
             }
 
             this.pinyinLong = builderLong.toString();
             this.pinyinShort = builderShort.toString();
+        }
+
+        public static Pinyin from(String source) {
+            return new Pinyin(PinyinHelper.convertToPinyinString(source, " ", PinyinFormat.WITHOUT_TONE)
+                    .toLowerCase()
+                    .split(" "));
         }
 
     }
