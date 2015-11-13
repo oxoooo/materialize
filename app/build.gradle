@@ -30,8 +30,8 @@ android {
 
         targetSdkVersion 23
 
-        versionCode 10500
-        versionName "1.5.0"
+        versionCode 10501
+        versionName "1.5.1"
 
         buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
         buildConfigField "String", "FIR_API_TOKEN",
