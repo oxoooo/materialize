@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import ooo.oxo.apps.materialize.databinding.MainAppItemBinding;
 import ooo.oxo.apps.materialize.util.FilteredSortedListAdapter;
@@ -51,7 +52,11 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         AppInfo app = data.get(position);
         holder.binding.setApp(app);
-        requestManager.load(app).into(holder.binding.icon);
+
+        requestManager
+                .load(app)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(holder.binding.icon);
     }
 
     @Override

@@ -85,6 +85,7 @@ public class MainActivity extends RxAppCompatActivity
                 .subscribe(avoid -> apps.data.applyFilter());
 
         loading.compose(bindToLifecycle())
+                .doOnCompleted(() -> binding.apps.smoothScrollToPosition(0))
                 .subscribe(apps.data::addWithIndex);
 
         UpdateUtil.checkForUpdateAndPrompt(this);
@@ -92,7 +93,7 @@ public class MainActivity extends RxAppCompatActivity
 
     @Override
     public void onItemClick(AppInfoAdapter.ViewHolder holder) {
-        AppInfo app = apps.data.get(holder.getAdapterPosition());
+        AppInfo app = apps.data.get(holder.getLayoutPosition());
 
         Intent intent = new Intent(this, AdjustActivity.class);
         intent.putExtra("activity", app.activityInfo);

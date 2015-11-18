@@ -44,6 +44,10 @@ public class AdjustViewModel extends BaseObservable {
     private Drawable background;
 
     public AdjustViewModel() {
+        reset();
+    }
+
+    public void reset() {
         setShape(CompositeDrawable.Shape.SQUARE);
         setPadding(0);
         setBackground(white);
@@ -61,7 +65,7 @@ public class AdjustViewModel extends BaseObservable {
 
     public void setInfinite(InfiniteDrawable infinite) {
         this.infinite = infinite;
-        notifyPropertyChanged(BR.infinite);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.infinite);
     }
 
     @Bindable
@@ -71,7 +75,8 @@ public class AdjustViewModel extends BaseObservable {
 
     public void setShape(CompositeDrawable.Shape shape) {
         this.shape = shape;
-        notifyPropertyChanged(BR.shape);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.shape);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.shapeRadioId);
     }
 
     @Bindable
@@ -92,7 +97,8 @@ public class AdjustViewModel extends BaseObservable {
 
     public void setPadding(float padding) {
         this.padding = padding;
-        notifyPropertyChanged(BR.padding);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.padding);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.paddingValue);
 
         if (infinite != null) {
             infinite.setPadding(padding);
@@ -125,7 +131,8 @@ public class AdjustViewModel extends BaseObservable {
 
     public void setBackground(Drawable background) {
         this.background = background;
-        notifyPropertyChanged(BR.background);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.background);
+        notifyPropertyChanged(ooo.oxo.apps.materialize.BR.backgroundRadioId);
     }
 
     @Bindable
