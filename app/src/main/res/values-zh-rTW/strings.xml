@@ -44,6 +44,7 @@
 
     <string name="adjust_ok">添加到主屏幕</string>
     <string name="adjust_cancel">取消</string>
+    <string name="adjust_reset">重設</string>
 
     <string name="fail_stencil">模板載入失敗</string>
     <string name="done">圖標已添加到主屏幕</string>

@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,6 +66,8 @@ public class AppInfo {
 
     public Bitmap icon = null;
 
+    public Uri cache = null;
+
     private AppInfo(ActivityInfo activityInfo) {
         this.activityInfo = activityInfo;
     }
@@ -80,6 +83,16 @@ public class AppInfo {
     public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager) {
         AppInfo app = new AppInfo(activityInfo);
         return app.resolve(packageManager) ? app : null;
+    }
+
+    public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager, IconManager iconManager) {
+        AppInfo app = from(activityInfo, packageManager);
+
+        if (app != null) {
+            app.resolveCache(iconManager);
+        }
+
+        return app;
     }
 
     public boolean resolve(PackageManager packageManager) {
@@ -131,11 +144,19 @@ public class AppInfo {
 
         icon = BitmapFactory.decodeStream(res.openRawResource(iconResId, iconValue));
 
-        return true;
+        return icon != null;
+    }
+
+    public boolean resolveCache(IconManager iconManager) {
+        cache = iconManager.get(this);
+        return cache != null;
     }
 
     public Intent getIntent() {
-        return new Intent(Intent.ACTION_MAIN).setComponent(component).setFlags(activityInfo.flags);
+        return new Intent(Intent.ACTION_MAIN)
+                .putExtra("__materialize_nonce__", System.currentTimeMillis())
+                .setComponent(component)
+                .setFlags(activityInfo.flags);
     }
 
     @Override

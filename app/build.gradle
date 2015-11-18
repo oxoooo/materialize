@@ -155,6 +155,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.3.0'
 
+    compile 'io.realm:realm-android:0.85.1'
+
     compile 'com.github.oxoooo:data-binding-support:1.1.0'
 
     compile 'com.github.stuxuhai:jpinyin:1.0'

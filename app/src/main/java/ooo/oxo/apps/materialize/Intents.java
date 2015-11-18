@@ -4,7 +4,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,25 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
+package ooo.oxo.apps.materialize;
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-    }
-}
+import android.content.Intent;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-        maven { url "http://maven.bughd.com/public" }
-    }
-}
+public class Intents {
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public static final Intent MAIN = new Intent(Intent.ACTION_MAIN)
+            .addCategory(Intent.CATEGORY_LAUNCHER);
+
 }

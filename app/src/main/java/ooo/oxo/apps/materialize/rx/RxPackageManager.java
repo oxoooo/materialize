@@ -4,7 +4,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,25 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package ooo.oxo.apps.materialize.rx;
+
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+
+import rx.Observable;
+
+public class RxPackageManager {
+
+    public static Observable<ResolveInfo> intentActivities(PackageManager packageManager, Intent intent, int flags) {
+        return Observable.defer(() -> Observable.from(packageManager.queryIntentActivities(intent, flags)));
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-        maven { url "http://maven.bughd.com/public" }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

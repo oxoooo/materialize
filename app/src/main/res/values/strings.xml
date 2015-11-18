@@ -43,8 +43,9 @@
     <string name="color_white">White</string>
     <string name="color_gradient">Auto fill</string>
 
-    <string name="adjust_ok">Add to home screen</string>
+    <string name="adjust_ok">Add to home</string>
     <string name="adjust_cancel">Cancel</string>
+    <string name="adjust_reset">Reset</string>
 
     <string name="fail_stencil">Failed to load stencils</string>
     <string name="done">Icon is added to your home screen</string>

@@ -32,6 +32,7 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import ooo.oxo.apps.materialize.databinding.MainActivityBinding;
+import ooo.oxo.apps.materialize.rx.RxPackageManager;
 import ooo.oxo.apps.materialize.util.UpdateUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -42,28 +43,26 @@ public class MainActivity extends RxAppCompatActivity
 
     private static final String TAG = "MainActivity";
 
-    private final Observable<AppInfo> loading = Observable
-            .defer(() -> {
-                Intent intent = new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_LAUNCHER);
-                return Observable.from(getPackageManager().queryIntentActivities(intent, 0));
-            })
-            .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager()))
-            .filter(app -> app != null)
-            .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
-            .filter(app -> !app.component.getPackageName().startsWith("com.android."))
-            .filter(app -> !app.component.getPackageName().startsWith("com.google."))
-            .filter(app -> !app.component.getPackageName().startsWith("org.cyanogenmod."))
-            .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
-            .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
-            .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .cache();
+    private static final int REQUEST_MAKE_ICON = 1;
+
+    private IconManager iconManager;
 
     private AppInfoAdapter apps;
 
     private SearchPanelController searchPanelController;
+
+    /**
+     * @return Observable with apps known in Material Design filtered out
+     */
+    private static Observable.Transformer<AppInfo, AppInfo> filterGoodGuys() {
+        return observable -> observable
+                .filter(app -> !app.component.getPackageName().startsWith("com.android."))
+                .filter(app -> !app.component.getPackageName().startsWith("com.google."))
+                .filter(app -> !app.component.getPackageName().startsWith("org.cyanogenmod."))
+                .filter(app -> !app.component.getPackageName().startsWith("com.cyanogenmod."))
+                .filter(app -> !app.component.getPackageName().startsWith("me.xingrz."))
+                .filter(app -> !app.component.getPackageName().startsWith("ooo.oxo."));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,16 @@ public class MainActivity extends RxAppCompatActivity
                 .compose(bindToLifecycle())
                 .subscribe(avoid -> apps.data.applyFilter());
 
-        loading.compose(bindToLifecycle())
+        iconManager = new IconManager(this);
+
+        RxPackageManager
+                .intentActivities(getPackageManager(), Intents.MAIN, 0)
+                .map(resolve -> AppInfo.from(resolve.activityInfo, getPackageManager(), iconManager))
+                .filter(app -> app != null)
+                .filter(app -> !app.component.getPackageName().equals(BuildConfig.APPLICATION_ID))
+                .compose(filterGoodGuys())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> binding.apps.smoothScrollToPosition(0))
                 .subscribe(apps.data::addWithIndex);
 
@@ -93,15 +101,42 @@ public class MainActivity extends RxAppCompatActivity
 
     @Override
     public void onItemClick(AppInfoAdapter.ViewHolder holder) {
-        AppInfo app = apps.data.get(holder.getLayoutPosition());
+        int index = holder.getLayoutPosition();
+        AppInfo app = apps.data.get(index);
 
         Intent intent = new Intent(this, AdjustActivity.class);
+        intent.putExtra("index", index);
         intent.putExtra("activity", app.activityInfo);
 
         ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(
                 holder.itemView, 0, 0, holder.itemView.getWidth(), holder.itemView.getHeight());
 
-        ActivityCompat.startActivity(this, intent, options.toBundle());
+        ActivityCompat.startActivityForResult(this, intent, REQUEST_MAKE_ICON, options.toBundle());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_MAKE_ICON:
+                if (data != null) {
+                    invalidateIcon(data.getIntExtra("index", 0));
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void invalidateIcon(int index) {
+        AppInfo app = apps.data.get(index);
+        if (app.resolveCache(iconManager)) {
+            app.cache = app.cache
+                    .buildUpon()
+                    .appendQueryParameter("t", String.valueOf(System.currentTimeMillis()))
+                    .build();
+        }
+
+        apps.notifyItemChanged(index);
     }
 
     @Override

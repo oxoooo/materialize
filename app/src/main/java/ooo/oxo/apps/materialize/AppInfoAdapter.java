@@ -52,9 +52,7 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         AppInfo app = data.get(position);
         holder.binding.setApp(app);
-
-        requestManager
-                .load(app)
+        requestManager.load(app.cache != null ? app.cache : app)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(holder.binding.icon);
     }
