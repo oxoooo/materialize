@@ -26,8 +26,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 import ooo.oxo.apps.materialize.util.DisplayMetricsCompat;
 
@@ -50,6 +54,8 @@ public class AppInfo {
     public ComponentName component;
 
     public String label;
+
+    public Pinyin labelPinyin;
 
     public Resources res;
 
@@ -77,8 +83,10 @@ public class AppInfo {
     }
 
     public boolean resolve(PackageManager packageManager) {
-        this.component = new ComponentName(activityInfo.packageName, activityInfo.name);
-        this.label = activityInfo.loadLabel(packageManager).toString();
+        component = new ComponentName(activityInfo.packageName, activityInfo.name);
+
+        label = activityInfo.loadLabel(packageManager).toString();
+        labelPinyin = Pinyin.from(label);
 
         String app = activityInfo.applicationInfo.packageName;
 
@@ -133,6 +141,36 @@ public class AppInfo {
     @Override
     public String toString() {
         return component == null ? null : component.toString();
+    }
+
+    public static class Pinyin {
+
+        public final String pinyinLong;
+
+        public final String pinyinShort;
+
+        private Pinyin(String[] source) {
+            StringBuilder builderLong = new StringBuilder();
+            StringBuilder builderShort = new StringBuilder();
+
+            for (String s : source) {
+                s = s.trim();
+                if (TextUtils.isGraphic(s)) {
+                    builderLong.append(s);
+                    builderShort.append(s.charAt(0));
+                }
+            }
+
+            this.pinyinLong = builderLong.toString();
+            this.pinyinShort = builderShort.toString();
+        }
+
+        public static Pinyin from(String source) {
+            return new Pinyin(PinyinHelper.convertToPinyinString(source, " ", PinyinFormat.WITHOUT_TONE)
+                    .toLowerCase()
+                    .split(" "));
+        }
+
     }
 
 }

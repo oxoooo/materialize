@@ -61,7 +61,7 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
 
     @Override
     protected int compare(AppInfo o1, AppInfo o2) {
-        return o1.label.compareTo(o2.label);
+        return o1.labelPinyin.pinyinLong.compareTo(o2.labelPinyin.pinyinLong);
     }
 
     @Override

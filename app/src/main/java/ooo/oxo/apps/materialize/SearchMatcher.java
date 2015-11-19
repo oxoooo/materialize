@@ -20,16 +20,9 @@ package ooo.oxo.apps.materialize;
 
 import android.text.TextUtils;
 
-import com.github.stuxuhai.jpinyin.PinyinFormat;
-import com.github.stuxuhai.jpinyin.PinyinHelper;
-
-import java.util.HashMap;
-
 public class SearchMatcher implements FilteredSortedList.Filter<AppInfo> {
 
     private final KeywordProvider provider;
-
-    private final HashMap<String, Pinyin> pinyinCache = new HashMap<>();
 
     public SearchMatcher(KeywordProvider provider) {
         this.provider = provider;
@@ -56,20 +49,11 @@ public class SearchMatcher implements FilteredSortedList.Filter<AppInfo> {
             return true;
         }
 
-        Pinyin pinyin;
-
-        if (pinyinCache.containsKey(app.label)) {
-            pinyin = pinyinCache.get(app.label);
-        } else {
-            pinyin = Pinyin.from(app.label);
-            pinyinCache.put(app.label, pinyin);
-        }
-
-        if (pinyin.pinyinLong.contains(keyword)) {
+        if (app.labelPinyin.pinyinLong.contains(keyword)) {
             return true;
         }
 
-        if (pinyin.pinyinShort.contains(keyword)) {
+        if (app.labelPinyin.pinyinShort.contains(keyword)) {
             return true;
         }
 
@@ -79,36 +63,6 @@ public class SearchMatcher implements FilteredSortedList.Filter<AppInfo> {
     public interface KeywordProvider {
 
         String getKeyword();
-
-    }
-
-    public static class Pinyin {
-
-        public final String pinyinLong;
-
-        public final String pinyinShort;
-
-        private Pinyin(String[] source) {
-            StringBuilder builderLong = new StringBuilder();
-            StringBuilder builderShort = new StringBuilder();
-
-            for (String s : source) {
-                s = s.trim();
-                if (TextUtils.isGraphic(s)) {
-                    builderLong.append(s);
-                    builderShort.append(s.charAt(0));
-                }
-            }
-
-            this.pinyinLong = builderLong.toString();
-            this.pinyinShort = builderShort.toString();
-        }
-
-        public static Pinyin from(String source) {
-            return new Pinyin(PinyinHelper.convertToPinyinString(source, " ", PinyinFormat.WITHOUT_TONE)
-                    .toLowerCase()
-                    .split(" "));
-        }
 
     }
 
