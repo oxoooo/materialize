@@ -1,4 +1,4 @@
--keepattributes Signature, LineNumberTable
+-keepattributes LineNumberTable
 
 # retrolambda
 -dontwarn java.lang.invoke.*

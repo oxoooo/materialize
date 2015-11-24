@@ -46,22 +46,6 @@ public class UpdateUtil {
                     promptUpdate(context, version);
                 }
             }
-
-            @Override
-            public void onFail(String s, int i) {
-            }
-
-            @Override
-            public void onError(Exception e) {
-            }
-
-            @Override
-            public void onStart() {
-            }
-
-            @Override
-            public void onFinish() {
-            }
         });
     }
 
