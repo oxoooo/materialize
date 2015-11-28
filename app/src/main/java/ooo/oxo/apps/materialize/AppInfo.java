@@ -135,7 +135,7 @@ public class AppInfo {
     }
 
     public Intent getIntent() {
-        return new Intent().setComponent(component).setFlags(activityInfo.flags);
+        return new Intent(Intent.ACTION_MAIN).setComponent(component).setFlags(activityInfo.flags);
     }
 
     @Override
