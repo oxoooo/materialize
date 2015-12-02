@@ -40,6 +40,8 @@ public class MaterializeApplication extends Application {
 
         MaterializeSharedState.init(this);
 
+        MobclickAgent.setDebugMode(BuildConfig.DEBUG);
+
         HashMap<String, String> event = new HashMap<>();
         event.put("launcher", MaterializeSharedState.getInstance().getLauncher());
         MobclickAgent.onEvent(this, "launcher", event);
