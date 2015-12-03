@@ -156,7 +156,7 @@ public class CompositeDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        drawInternal(canvas, true, getBounds(), foregroundBounds, backgroundBounds);
+        drawInternal(canvas, true, getBounds(), foregroundBounds, backgroundBounds, scoreBounds);
     }
 
     public void drawTo(Canvas canvas, boolean antiAliasing) {
@@ -168,11 +168,14 @@ public class CompositeDrawable extends Drawable {
         Rect backgroundBounds = new Rect(bounds);
         applyBackgroundBounds(backgroundBounds);
 
-        drawInternal(canvas, antiAliasing, bounds, foregroundBounds, backgroundBounds);
+        Rect scoreBounds = new Rect(bounds);
+        applyScoreBounds(scoreBounds);
+
+        drawInternal(canvas, antiAliasing, bounds, foregroundBounds, backgroundBounds, scoreBounds);
     }
 
     private void drawInternal(Canvas canvas, boolean antiAliasing,
-                              Rect bounds, RectF foregroundBounds, Rect backgroundBounds) {
+                              Rect bounds, RectF foregroundBounds, Rect backgroundBounds, Rect scoreBounds) {
         paint.setFlags(antiAliasing ? FLAG_SCALES : 0);
 
         canvas.drawBitmap(back, null, bounds, paint);
