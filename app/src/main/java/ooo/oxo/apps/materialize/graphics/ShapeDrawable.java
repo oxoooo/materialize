@@ -53,6 +53,10 @@ public class ShapeDrawable extends CompositeDrawable {
 
     @Override
     protected boolean onStateChange(int[] state) {
+        if (state == null) {
+            return false;
+        }
+
         boolean checked = false;
         for (int i : state) {
             if (i == android.R.attr.state_checked) {
