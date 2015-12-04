@@ -37,17 +37,18 @@ android {
         versionCode 20000 + gitCommits
         versionName gitTag
 
+        manifestPlaceholders = [APP_NAME: '@string/app_name']
+
+        // Versioning
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        println "Building ${gitTag} (rev. ${gitCommits} on ${gitSha})"
+
+        // FIR
         buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
         buildConfigField "String", "FIR_API_TOKEN",
                 project.hasProperty('FIR_API_TOKEN') ? "\"${FIR_API_TOKEN}\"" : "null"
 
         buildConfigField "boolean", "FIR_OTA_ENABLED", "FIR_ENABLED"
-
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-
-        manifestPlaceholders = [APP_NAME: '@string/app_name']
-
-        println "Building ${gitTag} (rev. ${gitCommits} on ${gitSha})"
     }
 
     dataBinding {
