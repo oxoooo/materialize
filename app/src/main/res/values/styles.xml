@@ -23,6 +23,7 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="toolbarStyle">@style/DarkToolbar</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
 
     <style name="DarkToolbar" parent="Widget.AppCompat.Toolbar">
@@ -34,11 +35,31 @@
 
     <style name="ToolbarTitleTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
+    <style name="PopupMenu" parent="Widget.AppCompat.Light.PopupMenu">
+        <item name="overlapAnchor">true</item>
+    </style>
+
     <style name="AdjustTheme" parent="Theme.AppCompat.Light.Dialog.MinWidth">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="windowNoTitle">true</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <style name="DialogButtons">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="DialogButtons.Button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
 </resources>

@@ -30,6 +30,7 @@
         android:layout_marginRight="48dp"
         android:background="@android:color/transparent"
         android:hint="@string/search_hint"
+        android:inputType="text|textFilter"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:singleLine="true"

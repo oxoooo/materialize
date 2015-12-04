@@ -44,10 +44,17 @@
     <string name="color_gradient">Auto fill</string>
 
     <string name="adjust_ok">Add to home</string>
+    <string name="adjust_save">Save</string>
     <string name="adjust_cancel">Cancel</string>
+    <string name="adjust_export_gallery">Export to gallery</string>
     <string name="adjust_reset">Reset</string>
 
+    <string name="re_add_to_home">Add to home again</string>
+
     <string name="fail_stencil">Failed to load stencils</string>
-    <string name="done">Icon is added to your home screen</string>
+
+    <string name="toast_saved">Icon is saved</string>
+    <string name="toast_added_to_home">Icon is added to your home screen</string>
+    <string name="toast_exported_to_gallery">Icon is exported to your gallery</string>
 
 </resources>

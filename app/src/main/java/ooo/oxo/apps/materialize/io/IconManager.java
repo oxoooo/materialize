@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ooo.oxo.apps.materialize;
+package ooo.oxo.apps.materialize.io;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -30,20 +29,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class IconManager {
+import ooo.oxo.apps.materialize.AppInfo;
+
+public abstract class IconManager {
 
     private static final String TAG = "IconManager";
 
-    @SuppressWarnings("SpellCheckingInspection")
-    private static final String NO_MEDIA = ".nomedia";
+    protected final File root;
 
-    private final File root;
-
-    public IconManager(Context context) {
-        root = new File(context.getExternalCacheDir(), "icons");
-        if (!root.mkdirs() && !root.isDirectory()) {
-            Log.e(TAG, "Failed to create icons directory at " + root.getAbsolutePath());
-        }
+    public IconManager(File root) {
+        this.root = root;
     }
 
     public void save(AppInfo app, Bitmap icon) {
@@ -72,7 +67,7 @@ public class IconManager {
         } catch (IOException ignored) {
         }
 
-        Log.d(TAG, "Cached icon " + file.getAbsolutePath());
+        Log.d(TAG, "Saved icon " + file.getAbsolutePath());
     }
 
     public void delete(AppInfo app) {
@@ -89,32 +84,11 @@ public class IconManager {
         if (file == null || !file.isFile()) {
             return null;
         } else {
-            Log.d(TAG, "Resolved cached icon " + file.getAbsolutePath());
             return Uri.fromFile(file);
         }
     }
 
     @Nullable
-    private File makeIconFile(AppInfo app) {
-        File dir = new File(root, app.component.getPackageName());
-
-        if (!dir.mkdirs() && !dir.isDirectory()) {
-            Log.e(TAG, "Failed to create icon directory for package at " + dir.getAbsolutePath());
-            return null;
-        }
-
-        createNoMediaFile(dir);
-
-        return new File(dir, app.component.getClassName());
-    }
-
-    private boolean createNoMediaFile(File dir) {
-        try {
-            File noMedia = new File(dir, NO_MEDIA);
-            return noMedia.isFile() || noMedia.createNewFile();
-        } catch (IOException e) {
-            return false;
-        }
-    }
+    protected abstract File makeIconFile(AppInfo app);
 
 }

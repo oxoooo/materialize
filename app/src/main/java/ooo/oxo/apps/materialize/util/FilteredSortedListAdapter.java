@@ -30,8 +30,8 @@ public abstract class FilteredSortedListAdapter<T, VH extends RecyclerView.ViewH
     public FilteredSortedListAdapter(Class<T> type, FilteredSortedList.Filter<T> filter) {
         this.data = new FilteredSortedList<>(type, new SortedListAdapterCallback<T>(this) {
             @Override
-            public int compare(T o1, T o2) {
-                return FilteredSortedListAdapter.this.compare(o1, o2);
+            public int compare(T lhs, T rhs) {
+                return FilteredSortedListAdapter.this.compare(lhs, rhs);
             }
 
             @Override
@@ -51,7 +51,7 @@ public abstract class FilteredSortedListAdapter<T, VH extends RecyclerView.ViewH
         return data.size();
     }
 
-    protected abstract int compare(T o1, T o2);
+    protected abstract int compare(T lhs, T rhs);
 
     protected abstract boolean areContentsTheSame(T oldItem, T newItem);
 

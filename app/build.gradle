@@ -19,6 +19,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
+def gitCommits = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
@@ -30,8 +34,8 @@ android {
 
         targetSdkVersion 23
 
-        versionCode 10504
-        versionName "1.5.4"
+        versionCode 20000 + gitCommits
+        versionName gitTag
 
         buildConfigField "boolean", "FIR_ENABLED", "!DEBUG && ${project.hasProperty('FIR_API_TOKEN')}"
         buildConfigField "String", "FIR_API_TOKEN",
@@ -39,7 +43,11 @@ android {
 
         buildConfigField "boolean", "FIR_OTA_ENABLED", "FIR_ENABLED"
 
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+
         manifestPlaceholders = [APP_NAME: '@string/app_name']
+
+        println "Building ${gitTag} (rev. ${gitCommits} on ${gitSha})"
     }
 
     dataBinding {
@@ -79,10 +87,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             if (project.hasProperty('STOREFILE')) {
-                println "using release keystore ${signingConfigs.release.storeFile}"
+                println "Using release keystore ${signingConfigs.release.storeFile}"
                 signingConfig signingConfigs.release
             } else {
-                println "using default key"
+                println "Using default key"
             }
         }
     }
@@ -154,6 +162,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.3.0'
+
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.4.4@aar'
 
     compile 'io.realm:realm-android:0.85.1'
 

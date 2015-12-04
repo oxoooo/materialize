@@ -28,8 +28,9 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import ooo.oxo.apps.materialize.util.SoftInputManager;
 
 public class SearchPanelController {
 
@@ -39,7 +40,7 @@ public class SearchPanelController {
 
     private final EditText keyword;
 
-    private final InputMethodManager inputMethodManager;
+    private final SoftInputManager softInputManager;
 
     public SearchPanelController(ViewGroup container) {
         this.container = container;
@@ -52,8 +53,7 @@ public class SearchPanelController {
 
         container.findViewById(R.id.close).setOnClickListener(v -> clear());
 
-        this.inputMethodManager = (InputMethodManager) context.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+        this.softInputManager = SoftInputManager.from(keyword);
     }
 
     public EditText getKeyword() {
@@ -75,7 +75,7 @@ public class SearchPanelController {
 
         keyword.requestFocus();
 
-        toggleKeyboard(true);
+        softInputManager.show();
     }
 
     public void close() {
@@ -99,7 +99,7 @@ public class SearchPanelController {
             container.setVisibility(View.INVISIBLE);
         }
 
-        toggleKeyboard(false);
+        softInputManager.hide();
     }
 
     public void clear() {
@@ -113,14 +113,6 @@ public class SearchPanelController {
             return true;
         } else {
             return false;
-        }
-    }
-
-    private void toggleKeyboard(boolean show) {
-        if (show) {
-            inputMethodManager.showSoftInput(keyword, 0);
-        } else {
-            inputMethodManager.hideSoftInputFromWindow(keyword.getWindowToken(), 0);
         }
     }
 

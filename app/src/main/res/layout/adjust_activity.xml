@@ -36,6 +36,12 @@
             name="adjust"
             type="ooo.oxo.apps.materialize.AdjustViewModel" />
 
+        <variable
+            name="isNew"
+            type="boolean" />
+
+        <import type="android.view.View" />
+
     </data>
 
     <LinearLayout
@@ -214,24 +220,16 @@
 
         </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="end"
-            android:orientation="horizontal">
+        <LinearLayout style="@style/DialogButtons">
 
-            <Button
-                android:id="@+id/reset"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="12dp"
-                android:layout_marginStart="12dp"
-                android:minWidth="64dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:text="@string/adjust_reset" />
+            <ImageButton
+                android:id="@+id/more"
+                style="@style/DialogButtons.Button"
+                android:enabled="@{app != null}"
+                android:minWidth="36dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:src="@drawable/ic_more_vert_black_24dp" />
 
             <Space
                 android:layout_width="0dp"
@@ -240,33 +238,27 @@
 
             <Button
                 android:id="@+id/cancel"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:minWidth="64dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
+                style="@style/DialogButtons.Button"
                 android:text="@string/adjust_cancel" />
 
             <Button
                 android:id="@+id/ok"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
+                style="@style/DialogButtons.Button"
                 android:enabled="@{app != null}"
-                android:minWidth="64dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
                 android:text="@string/adjust_ok"
-                android:textColor="?colorPrimary" />
+                android:textColor="?colorPrimary"
+                android:visibility="@{isNew ? View.VISIBLE : View.GONE}" />
+
+            <Button
+                android:id="@+id/save"
+                style="@style/DialogButtons.Button"
+                android:enabled="@{app != null}"
+                android:text="@string/adjust_save"
+                android:textColor="?colorPrimary"
+                android:visibility="@{isNew ? View.GONE : View.VISIBLE}" />
 
         </LinearLayout>
 
     </LinearLayout>
 
 </layout>
-

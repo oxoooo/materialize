@@ -24,8 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
-import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
+import io.realm.annotations.PrimaryKey;
 
 public class Adjustment extends RealmObject {
 
@@ -35,11 +34,8 @@ public class Adjustment extends RealmObject {
     public static final int COLOR_WHITE = 0;
     public static final int COLOR_INFINITE = 1;
 
-    @Required
-    private String packageName;
-
-    @Required
-    private String className;
+    @PrimaryKey
+    private String component;
 
     @Shape
     private int shape = SHAPE_SQUARE;
@@ -49,20 +45,19 @@ public class Adjustment extends RealmObject {
     @Color
     private int color = COLOR_WHITE;
 
-    public String getPackageName() {
-        return packageName;
+    public Adjustment() {
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public Adjustment(String component) {
+        this.component = component;
     }
 
-    public String getClassName() {
-        return className;
+    public String getComponent() {
+        return component;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setComponent(String component) {
+        this.component = component;
     }
 
     @Shape

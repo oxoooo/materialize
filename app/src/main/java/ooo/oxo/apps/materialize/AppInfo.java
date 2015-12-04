@@ -34,6 +34,7 @@ import android.util.TypedValue;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
+import ooo.oxo.apps.materialize.io.IconCacheManager;
 import ooo.oxo.apps.materialize.util.DisplayMetricsCompat;
 
 /**
@@ -85,11 +86,12 @@ public class AppInfo {
         return app.resolve(packageManager) ? app : null;
     }
 
-    public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager, IconManager iconManager) {
+    @Nullable
+    public static AppInfo from(ActivityInfo activityInfo, PackageManager packageManager, IconCacheManager iconCacheManager) {
         AppInfo app = from(activityInfo, packageManager);
 
         if (app != null) {
-            app.resolveCache(iconManager);
+            app.resolveCache(iconCacheManager);
         }
 
         return app;
@@ -147,8 +149,8 @@ public class AppInfo {
         return icon != null;
     }
 
-    public boolean resolveCache(IconManager iconManager) {
-        cache = iconManager.get(this);
+    public boolean resolveCache(IconCacheManager iconCacheManager) {
+        cache = iconCacheManager.get(this);
         return cache != null;
     }
 
@@ -161,7 +163,7 @@ public class AppInfo {
 
     @Override
     public String toString() {
-        return component == null ? null : component.toString();
+        return "AppInfo{" + (component == null ? "(not resolved)" : component.flattenToShortString()) + "}";
     }
 
     public static class Pinyin {

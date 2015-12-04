@@ -18,6 +18,7 @@
 
 package ooo.oxo.apps.materialize;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
@@ -27,9 +28,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v7.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.view.RxMenuItem;
 import com.jakewharton.rxbinding.view.RxView;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -41,6 +45,8 @@ import ooo.oxo.apps.materialize.db.Adjustment;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.InfiniteDrawable;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
+import ooo.oxo.apps.materialize.io.IconCacheManager;
+import ooo.oxo.apps.materialize.io.PublicIconManager;
 import ooo.oxo.apps.materialize.util.LauncherUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,7 +66,9 @@ public class AdjustActivity extends RxAppCompatActivity {
 
     private AdjustActivityBinding binding;
 
-    private IconManager iconManager;
+    private IconCacheManager iconCacheManager;
+
+    private PublicIconManager publicIconManager;
 
     private AdjustViewModel viewModel = new AdjustViewModel();
 
@@ -79,7 +87,14 @@ public class AdjustActivity extends RxAppCompatActivity {
         binding.setTransparency(new TransparencyDrawable(
                 getResources(), R.dimen.transparency_grid_size));
 
-        iconManager = new IconManager(this);
+        PopupMenu popupMenu = new PopupMenu(this, binding.more);
+        popupMenu.inflate(R.menu.adjust);
+
+        binding.more.setOnClickListener(v -> popupMenu.show());
+
+        iconCacheManager = new IconCacheManager(this);
+
+        publicIconManager = new PublicIconManager(this);
 
         ActivityInfo activity = getIntent().getParcelableExtra("activity");
 
@@ -109,12 +124,18 @@ public class AdjustActivity extends RxAppCompatActivity {
         realm = Realm.getInstance(this);
 
         Observable<Adjustment> adjustment = resolving
+                .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(app -> realm.where(Adjustment.class)
-                        .equalTo("packageName", app.component.getPackageName())
-                        .equalTo("className", app.component.getClassName())
+                        .equalTo("component", app.component.flattenToString())
                         .findFirst())
                 .cache();
+
+        adjustment.subscribe(model -> {
+            boolean isNew = model == null;
+            binding.setIsNew(isNew);
+            popupMenu.getMenu().findItem(R.id.re_add_to_home).setVisible(!isNew);
+        });
 
         adjustment.filter(model -> model != null)
                 .zipWith(infinity, (model, drawable) -> model)
@@ -128,8 +149,7 @@ public class AdjustActivity extends RxAppCompatActivity {
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
                 .subscribe(avoid -> {
-                    setResult(RESULT_CANCELED, new Intent().putExtra("index", index));
-                    supportFinishAfterTransition();
+                    finishWithResult(RESULT_CANCELED);
                 });
 
         int size = SUPPORT_MIPMAP ? LAUNCHER_SIZE_MIPMAP
@@ -145,7 +165,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                 })
                 .observeOn(Schedulers.io())
                 .zipWith(resolving, (icon, app) -> {
-                    iconManager.save(app, icon);
+                    iconCacheManager.save(app, icon);
                     return icon;
                 });
 
@@ -157,8 +177,7 @@ public class AdjustActivity extends RxAppCompatActivity {
 
                     if (model == null || !model.isValid()) {
                         model = realm.createObject(Adjustment.class);
-                        model.setPackageName(app.component.getPackageName());
-                        model.setClassName(app.component.getClassName());
+                        model.setComponent(app.component.flattenToString());
                     }
 
                     model.setShape(mapShapeRadioId(viewModel.getShapeRadioId()));
@@ -168,6 +187,17 @@ public class AdjustActivity extends RxAppCompatActivity {
                     realm.commitTransaction();
 
                     return model;
+                });
+
+        RxView.clicks(binding.save)
+                .compose(bindToLifecycle())
+                .zipWith(resolving, (avoid, app) -> app)
+                .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(avoid -> {
+                    Toast.makeText(this, R.string.toast_saved, Toast.LENGTH_SHORT).show();
+                    MobclickAgent.onEvent(this, "compose", makeEvent("none"));
+                    finishWithResult(RESULT_OK);
                 });
 
         RxView.clicks(binding.ok)
@@ -180,18 +210,56 @@ public class AdjustActivity extends RxAppCompatActivity {
                     return null;
                 })
                 .subscribe(avoid -> {
-                    Toast.makeText(this, R.string.done, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    MobclickAgent.onEvent(this, "compose", makeEvent("launcher"));
+                    MobclickAgent.onEvent(this, "install");
+                    finishWithResult(RESULT_OK);
+                });
 
-                    MobclickAgent.onEvent(this, "compose", makeEvent());
+        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.re_add_to_home))
+                .compose(bindToLifecycle())
+                .zipWith(resolving, (avoid, app) -> app)
+                .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(resolving, (icon, app) -> {
+                    LauncherUtil.installShortcut(this, app.getIntent(), app.label, icon);
+                    return null;
+                })
+                .subscribe(avoid -> {
+                    Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    MobclickAgent.onEvent(this, "compose", makeEvent("launcher"));
+                    MobclickAgent.onEvent(this, "install");
+                    finishWithResult(RESULT_OK);
+                });
 
-                    setResult(RESULT_OK, new Intent().putExtra("index", index));
-                    supportFinishAfterTransition();
+        Observable<Boolean> permission = RxPermissions
+                .getInstance(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .doOnNext(RxMenuItem.enabled(popupMenu.getMenu().findItem(R.id.export_to_gallery)))
+                .filter(granted -> granted);
+
+        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.export_to_gallery))
+                .compose(bindToLifecycle())
+                .zipWith(resolving, (avoid, app) -> app)
+                .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(permission, (icon, granted) -> icon)
+                .observeOn(Schedulers.io())
+                .zipWith(resolving, (icon, app) -> {
+                    publicIconManager.save(app, icon);
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(avoid -> {
+                    Toast.makeText(this, R.string.toast_exported_to_gallery, Toast.LENGTH_SHORT).show();
+                    MobclickAgent.onEvent(this, "compose", makeEvent("gallery"));
+                    finishWithResult(RESULT_OK);
                 });
 
         Observable<AppInfo> deleteCache = resolving
                 .compose(bindToLifecycle())
                 .observeOn(Schedulers.io())
-                .doOnNext(iconManager::delete);
+                .doOnNext(iconCacheManager::delete);
 
         Observable<Adjustment> deletePersist = adjustment
                 .compose(bindToLifecycle())
@@ -204,11 +272,20 @@ public class AdjustActivity extends RxAppCompatActivity {
                     }
                 });
 
-        RxView.clicks(binding.reset)
+        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.reset))
                 .compose(bindToLifecycle())
                 .zipWith(resolving, (avoid, app) -> app)
                 .flatMap(avoid -> Observable.zip(deleteCache, deletePersist, (a, b) -> null))
-                .subscribe(avoid -> viewModel.reset());
+                .doOnNext(avoid -> viewModel.reset())
+                .subscribe(avoid -> {
+                    MobclickAgent.onEvent(this, "reset");
+                    finishWithResult(RESULT_CANCELED);
+                });
+    }
+
+    private void finishWithResult(int resultCode) {
+        setResult(resultCode, new Intent().putExtra("index", index));
+        supportFinishAfterTransition();
     }
 
     @Override
@@ -223,10 +300,11 @@ public class AdjustActivity extends RxAppCompatActivity {
         MobclickAgent.onPause(this);
     }
 
-    private HashMap<String, String> makeEvent() {
+    private HashMap<String, String> makeEvent(String usage) {
         HashMap<String, String> event = new HashMap<>();
         event.put("shape", viewModel.getShape().name());
         event.put("color", mapColorName(binding.colors.getCheckedRadioButtonId()));
+        event.put("usage", usage);
         return event;
     }
 

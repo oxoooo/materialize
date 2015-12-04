@@ -43,10 +43,17 @@
     <string name="color_gradient">智能填充</string>
 
     <string name="adjust_ok">添加到主屏幕</string>
+    <string name="adjust_save">儲存</string>
     <string name="adjust_cancel">取消</string>
+    <string name="adjust_export_gallery">匯出到圖庫</string>
     <string name="adjust_reset">重設</string>
 
+    <string name="re_add_to_home">重新添加到主屏幕</string>
+
     <string name="fail_stencil">模板載入失敗</string>
-    <string name="done">圖標已添加到主屏幕</string>
+
+    <string name="toast_saved">圖標已儲存</string>
+    <string name="toast_added_to_home">圖標已添加到主屏幕</string>
+    <string name="toast_exported_to_gallery">圖標已匯出到圖庫</string>
 
 </resources>

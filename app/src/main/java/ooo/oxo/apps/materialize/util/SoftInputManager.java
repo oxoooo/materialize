@@ -16,26 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        jcenter()
+package ooo.oxo.apps.materialize.util;
+
+import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+public class SoftInputManager {
+
+    private final View view;
+    private final InputMethodManager imm;
+
+    private SoftInputManager(View view, InputMethodManager imm) {
+        this.view = view;
+        this.imm = imm;
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+    public static SoftInputManager from(View view) {
+        return new SoftInputManager(view,
+                (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE));
     }
-}
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-        maven { url "http://maven.bughd.com/public" }
-        maven { url "http://dl.bintray.com/tbruyelle/tbruyelle" }
+    public void show() {
+        imm.showSoftInput(view, 0);
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public void hide() {
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 }

@@ -19,6 +19,7 @@
 package ooo.oxo.apps.materialize;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -31,6 +32,7 @@ import ooo.oxo.library.databinding.support.widget.BindingRecyclerView;
 
 public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAdapter.ViewHolder> {
 
+    private final Context context;
     private final LayoutInflater inflater;
     private final RequestManager requestManager;
     private final OnItemClickListener listener;
@@ -38,6 +40,7 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
     public AppInfoAdapter(Context context, RequestManager requestManager,
                           FilteredSortedList.Filter<AppInfo> filter, OnItemClickListener listener) {
         super(AppInfo.class, filter);
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.requestManager = requestManager;
         this.listener = listener;
@@ -58,8 +61,8 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
     }
 
     @Override
-    protected int compare(AppInfo o1, AppInfo o2) {
-        return o1.labelPinyin.pinyinLong.compareTo(o2.labelPinyin.pinyinLong);
+    protected int compare(AppInfo lhs, AppInfo rhs) {
+        return lhs.labelPinyin.pinyinLong.compareTo(rhs.labelPinyin.pinyinLong);
     }
 
     @Override
@@ -76,13 +79,30 @@ public class AppInfoAdapter extends FilteredSortedListAdapter<AppInfo, AppInfoAd
 
         void onItemClick(ViewHolder holder);
 
+        void onShowingPopupMenu(ViewHolder holder, PopupMenu menu);
+
+        void onReinstallShortcutClick(ViewHolder holder);
+
     }
 
     public class ViewHolder extends BindingRecyclerView.ViewHolder<MainAppItemBinding> {
 
+        public final PopupMenu popupMenu;
+
         public ViewHolder(ViewGroup parent) {
             super(inflater, R.layout.main_app_item, parent);
+
             itemView.setOnClickListener(v -> listener.onItemClick(this));
+
+            popupMenu = new PopupMenu(context, binding.more);
+            popupMenu.inflate(R.menu.main_item);
+            popupMenu.getMenu().findItem(R.id.add_to_launcher)
+                    .setOnMenuItemClickListener(i -> {
+                        listener.onReinstallShortcutClick(this);
+                        return true;
+                    });
+
+            binding.more.setOnClickListener(v -> listener.onShowingPopupMenu(this, popupMenu));
         }
 
     }
