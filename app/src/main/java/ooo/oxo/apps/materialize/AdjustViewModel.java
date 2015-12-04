@@ -146,30 +146,42 @@ public class AdjustViewModel extends BaseObservable {
         return mapColorRadioId(background);
     }
 
-    private CompositeDrawable.Shape mapShape(@IdRes int radio) {
+    public CompositeDrawable.Shape mapShape(@IdRes int radio) {
         switch (radio) {
             case R.id.shape_square:
                 return CompositeDrawable.Shape.SQUARE;
+            case R.id.shape_square_score:
+                return CompositeDrawable.Shape.SQUARE_SCORE;
+            case R.id.shape_square_dog_ear:
+                return CompositeDrawable.Shape.SQUARE_DOGEAR;
             case R.id.shape_round:
                 return CompositeDrawable.Shape.ROUND;
+            case R.id.shape_round_score:
+                return CompositeDrawable.Shape.ROUND_SCORE;
             default:
                 return null;
         }
     }
 
     @IdRes
-    private int mapShapeRadioId(CompositeDrawable.Shape shape) {
+    public int mapShapeRadioId(CompositeDrawable.Shape shape) {
         switch (shape) {
             case SQUARE:
                 return R.id.shape_square;
+            case SQUARE_SCORE:
+                return R.id.shape_square_score;
+            case SQUARE_DOGEAR:
+                return R.id.shape_square_dog_ear;
             case ROUND:
                 return R.id.shape_round;
+            case ROUND_SCORE:
+                return R.id.shape_round_score;
             default:
                 return View.NO_ID;
         }
     }
 
-    private Drawable mapColor(@IdRes int radio) {
+    public Drawable mapColor(@IdRes int radio) {
         switch (radio) {
             case R.id.color_white:
                 return white;
@@ -181,7 +193,7 @@ public class AdjustViewModel extends BaseObservable {
     }
 
     @IdRes
-    private int mapColorRadioId(Drawable color) {
+    public int mapColorRadioId(Drawable color) {
         if (color == white) {
             return R.id.color_white;
         } else if (color == infinite) {

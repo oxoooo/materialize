@@ -29,6 +29,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxMenuItem;
@@ -44,6 +46,7 @@ import ooo.oxo.apps.materialize.databinding.AdjustActivityBinding;
 import ooo.oxo.apps.materialize.db.Adjustment;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.InfiniteDrawable;
+import ooo.oxo.apps.materialize.graphics.ShapeDrawable;
 import ooo.oxo.apps.materialize.graphics.TransparencyDrawable;
 import ooo.oxo.apps.materialize.io.IconCacheManager;
 import ooo.oxo.apps.materialize.io.PublicIconManager;
@@ -86,6 +89,15 @@ public class AdjustActivity extends RxAppCompatActivity {
 
         binding.setTransparency(new TransparencyDrawable(
                 getResources(), R.dimen.transparency_grid_size));
+
+        RadioGroup shapes = binding.shape;
+
+        for (int i = 0; i < shapes.getChildCount(); i++) {
+            RadioButton child = (RadioButton) shapes.getChildAt(i);
+            CompositeDrawable.Shape shape = viewModel.mapShape(child.getId());
+            child.setButtonDrawable(new ShapeDrawable(getResources(), shape, R.color.accent));
+            child.setBackgroundDrawable(null);
+        }
 
         PopupMenu popupMenu = new PopupMenu(this, binding.more);
         popupMenu.inflate(R.menu.adjust);
@@ -323,8 +335,14 @@ public class AdjustActivity extends RxAppCompatActivity {
         switch (shape) {
             case Adjustment.SHAPE_SQUARE:
                 return CompositeDrawable.Shape.SQUARE;
+            case Adjustment.SHAPE_SQUARE_SCORE:
+                return CompositeDrawable.Shape.SQUARE_SCORE;
+            case Adjustment.SHAPE_SQUARE_DOGEAR:
+                return CompositeDrawable.Shape.SQUARE_DOGEAR;
             case Adjustment.SHAPE_ROUND:
                 return CompositeDrawable.Shape.ROUND;
+            case Adjustment.SHAPE_ROUND_SCORE:
+                return CompositeDrawable.Shape.ROUND_SCORE;
             default:
                 throw new IllegalArgumentException();
         }
@@ -335,8 +353,14 @@ public class AdjustActivity extends RxAppCompatActivity {
         switch (id) {
             case R.id.shape_square:
                 return Adjustment.SHAPE_SQUARE;
+            case R.id.shape_square_score:
+                return Adjustment.SHAPE_SQUARE_SCORE;
+            case R.id.shape_square_dog_ear:
+                return Adjustment.SHAPE_SQUARE_DOGEAR;
             case R.id.shape_round:
                 return Adjustment.SHAPE_ROUND;
+            case R.id.shape_round_score:
+                return Adjustment.SHAPE_ROUND_SCORE;
             default:
                 throw new IllegalArgumentException();
         }

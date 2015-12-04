@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -40,11 +41,15 @@ public class CompositeDrawable extends Drawable {
 
     private static final int FLAG_SCALES = Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG;
 
+    private static final int SCORE_COLOR = Color.argb(0x10, 0, 0, 0);
+
     private final Resources resources;
 
     private final RectF foregroundBounds = new RectF();
 
     private final Rect backgroundBounds = new Rect();
+
+    private final Rect scoreBounds = new Rect();
 
     private final Paint paint = new Paint();
 
@@ -97,6 +102,7 @@ public class CompositeDrawable extends Drawable {
         super.onBoundsChange(bounds);
         invalidateForegroundBounds();
         invalidateBackgroundBounds();
+        invalidateScoreBounds();
     }
 
     private void invalidateForegroundBounds() {
@@ -117,6 +123,15 @@ public class CompositeDrawable extends Drawable {
     private void applyBackgroundBounds(Rect backgroundBounds) {
         int offset = resources.getDimensionPixelOffset(shape.padding);
         backgroundBounds.inset(offset, offset);
+    }
+
+    private void invalidateScoreBounds() {
+        scoreBounds.set(getBounds());
+        applyScoreBounds(scoreBounds);
+    }
+
+    private void applyScoreBounds(Rect scoreBounds) {
+        scoreBounds.bottom = scoreBounds.centerY();
     }
 
     private void invalidateBitmaps() {
@@ -179,6 +194,12 @@ public class CompositeDrawable extends Drawable {
 
         paint.setFlags(antiAliasing ? FLAG_SCALES : 0);
 
+        if (shape.score) {
+            paint.setColor(SCORE_COLOR);
+            canvas.drawRect(scoreBounds, paint);
+            paint.setColor(Color.WHITE);
+        }
+
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
         canvas.drawBitmap(mask, null, bounds, paint);
         paint.setXfermode(null);
@@ -204,15 +225,45 @@ public class CompositeDrawable extends Drawable {
     }
 
     public enum Shape {
-        SQUARE(R.dimen.default_padding_square,
+        SQUARE(
+                R.dimen.default_padding_square,
                 R.drawable.stencil_square_back,
                 R.drawable.stencil_square_mask,
-                R.drawable.stencil_square_fore),
+                R.drawable.stencil_square_fore,
+                false
+        ),
 
-        ROUND(R.dimen.default_padding_round,
+        SQUARE_SCORE(
+                R.dimen.default_padding_square,
+                R.drawable.stencil_square_back,
+                R.drawable.stencil_square_mask,
+                R.drawable.stencil_square_fore,
+                true
+        ),
+
+        SQUARE_DOGEAR(
+                R.dimen.default_padding_square,
+                R.drawable.stencil_square_dogear_back,
+                R.drawable.stencil_square_dogear_mask,
+                R.drawable.stencil_square_dogear_fore,
+                false
+        ),
+
+        ROUND(
+                R.dimen.default_padding_round,
                 R.drawable.stencil_round_back,
                 R.drawable.stencil_round_mask,
-                R.drawable.stencil_round_fore);
+                R.drawable.stencil_round_fore,
+                false
+        ),
+
+        ROUND_SCORE(
+                R.dimen.default_padding_round,
+                R.drawable.stencil_round_back,
+                R.drawable.stencil_round_mask,
+                R.drawable.stencil_round_fore,
+                true
+        );
 
         @DimenRes
         public final int padding;
@@ -226,11 +277,14 @@ public class CompositeDrawable extends Drawable {
         @DrawableRes
         public final int fore;
 
-        Shape(int padding, @DrawableRes int back, @DrawableRes int mask, @DrawableRes int fore) {
+        public final boolean score;
+
+        Shape(int padding, @DrawableRes int back, @DrawableRes int mask, @DrawableRes int fore, boolean score) {
             this.padding = padding;
             this.back = back;
             this.mask = mask;
             this.fore = fore;
+            this.score = score;
         }
 
         public float getPadding(Resources resources) {

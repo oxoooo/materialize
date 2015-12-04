@@ -101,124 +101,112 @@
 
         </LinearLayout>
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:scrollbars="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="16dp">
 
-            <TableLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="1">
+                android:layout_marginBottom="8dp"
+                android:text="@string/adjust_label_shape"
+                android:textAllCaps="true" />
 
-                <TableRow android:layout_marginTop="16dp">
+            <RadioGroup
+                android:id="@+id/shape"
+                android:layout_width="2000dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:checkedButton="@{adjust.shapeRadioId}"
+                android:onCheckedChanged="@{adjust.shapeWatcher}"
+                android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/adjust_label_shape" />
+                <RadioButton
+                    android:id="@+id/shape_square"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="4dp" />
 
-                    <RadioGroup
-                        android:id="@+id/shape"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginStart="16dp"
-                        android:checkedButton="@{adjust.shapeRadioId}"
-                        android:onCheckedChanged="@{adjust.shapeWatcher}"
-                        android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/shape_square_score"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="4dp" />
 
-                        <RadioButton
-                            android:id="@+id/shape_square"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            android:text="@string/shape_square" />
+                <RadioButton
+                    android:id="@+id/shape_square_dog_ear"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="4dp" />
 
-                        <RadioButton
-                            android:id="@+id/shape_round"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/shape_round" />
+                <RadioButton
+                    android:id="@+id/shape_round"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="4dp" />
 
-                    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/shape_round_score"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="4dp" />
 
-                </TableRow>
+            </RadioGroup>
 
-                <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/adjust_label_padding"
+                android:textAllCaps="true" />
 
-                    <TextView
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/adjust_label_padding" />
+            <SeekBar
+                android:id="@+id/padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:max="@{adjust.paddingMax}"
+                android:onProgressChanged="@{adjust.paddingWatcher}"
+                android:progress="@{adjust.paddingValue}" />
 
-                    <SeekBar
-                        android:id="@+id/padding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginStart="16dp"
-                        android:max="@{adjust.paddingMax}"
-                        android:onProgressChanged="@{adjust.paddingWatcher}"
-                        android:progress="@{adjust.paddingValue}" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/adjust_label_color"
+                android:textAllCaps="true" />
 
-                </TableRow>
+            <RadioGroup
+                android:id="@+id/colors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@{adjust.backgroundRadioId}"
+                android:onCheckedChanged="@{adjust.backgroundWatcher}"
+                android:orientation="vertical">
 
-                <TableRow android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:id="@+id/color_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/color_white" />
 
-                    <TextView
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/adjust_label_color" />
+                <RadioButton
+                    android:id="@+id/color_infinite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:enabled="@{adjust.infinite != null}"
+                    android:text="@string/color_gradient" />
 
-                    <RadioGroup
-                        android:id="@+id/colors"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="12dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="6dp"
-                        android:checkedButton="@{adjust.backgroundRadioId}"
-                        android:onCheckedChanged="@{adjust.backgroundWatcher}"
-                        android:orientation="vertical">
+            </RadioGroup>
 
-                        <RadioButton
-                            android:id="@+id/color_white"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:text="@string/color_white" />
-
-                        <RadioButton
-                            android:id="@+id/color_infinite"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:enabled="@{adjust.infinite != null}"
-                            android:text="@string/color_gradient" />
-
-                    </RadioGroup>
-
-                </TableRow>
-
-            </TableLayout>
-
-        </ScrollView>
+        </LinearLayout>
 
         <LinearLayout style="@style/DialogButtons">
 

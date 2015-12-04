@@ -30,6 +30,9 @@ public class Adjustment extends RealmObject {
 
     public static final int SHAPE_SQUARE = 0;
     public static final int SHAPE_ROUND = 1;
+    public static final int SHAPE_SQUARE_SCORE = 2;
+    public static final int SHAPE_SQUARE_DOGEAR = 3;
+    public static final int SHAPE_ROUND_SCORE = 4;
 
     public static final int COLOR_WHITE = 0;
     public static final int COLOR_INFINITE = 1;
@@ -87,7 +90,7 @@ public class Adjustment extends RealmObject {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SHAPE_SQUARE, SHAPE_ROUND})
+    @IntDef({SHAPE_SQUARE, SHAPE_SQUARE_SCORE, SHAPE_SQUARE_DOGEAR, SHAPE_ROUND, SHAPE_ROUND_SCORE})
     public @interface Shape {
     }
 
