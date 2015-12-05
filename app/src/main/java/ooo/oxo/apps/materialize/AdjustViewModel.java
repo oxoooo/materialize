@@ -28,6 +28,7 @@ import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import ooo.oxo.apps.materialize.db.Adjustment;
 import ooo.oxo.apps.materialize.graphics.CompositeDrawable;
 import ooo.oxo.apps.materialize.graphics.InfiniteDrawable;
 
@@ -51,6 +52,12 @@ public class AdjustViewModel extends BaseObservable {
         setShape(CompositeDrawable.Shape.SQUARE);
         setPadding(0);
         setBackground(white);
+    }
+
+    public void applyFromModel(Adjustment model) {
+        setShape(mapShapeFromModel(model.getShape()));
+        setPadding(model.getPadding());
+        setBackground(mapColorFromModel(model.getColor()));
     }
 
     @Bindable
@@ -88,6 +95,11 @@ public class AdjustViewModel extends BaseObservable {
     @Bindable
     public int getShapeRadioId() {
         return mapShapeRadioId(shape);
+    }
+
+    @Adjustment.Shape
+    public int getShapeModelValue() {
+        return mapShapeModelValue(shape);
     }
 
     @Bindable
@@ -146,6 +158,11 @@ public class AdjustViewModel extends BaseObservable {
         return mapColorRadioId(background);
     }
 
+    @Adjustment.Color
+    public int getBackgroundModelValue() {
+        return mapColorModelValue(background);
+    }
+
     public CompositeDrawable.Shape mapShape(@IdRes int radio) {
         switch (radio) {
             case R.id.shape_square:
@@ -157,6 +174,23 @@ public class AdjustViewModel extends BaseObservable {
             case R.id.shape_round:
                 return CompositeDrawable.Shape.ROUND;
             case R.id.shape_round_score:
+                return CompositeDrawable.Shape.ROUND_SCORE;
+            default:
+                return null;
+        }
+    }
+
+    public CompositeDrawable.Shape mapShapeFromModel(@Adjustment.Shape int shape) {
+        switch (shape) {
+            case Adjustment.SHAPE_SQUARE:
+                return CompositeDrawable.Shape.SQUARE;
+            case Adjustment.SHAPE_SQUARE_SCORE:
+                return CompositeDrawable.Shape.SQUARE_SCORE;
+            case Adjustment.SHAPE_SQUARE_DOGEAR:
+                return CompositeDrawable.Shape.SQUARE_DOGEAR;
+            case Adjustment.SHAPE_ROUND:
+                return CompositeDrawable.Shape.ROUND;
+            case Adjustment.SHAPE_ROUND_SCORE:
                 return CompositeDrawable.Shape.ROUND_SCORE;
             default:
                 return null;
@@ -181,11 +215,40 @@ public class AdjustViewModel extends BaseObservable {
         }
     }
 
+    @Adjustment.Shape
+    public int mapShapeModelValue(CompositeDrawable.Shape shape) {
+        switch (shape) {
+            case SQUARE:
+                return Adjustment.SHAPE_SQUARE;
+            case SQUARE_SCORE:
+                return Adjustment.SHAPE_SQUARE_SCORE;
+            case SQUARE_DOGEAR:
+                return Adjustment.SHAPE_SQUARE_DOGEAR;
+            case ROUND:
+                return Adjustment.SHAPE_ROUND;
+            case ROUND_SCORE:
+                return Adjustment.SHAPE_ROUND_SCORE;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
     public Drawable mapColor(@IdRes int radio) {
         switch (radio) {
             case R.id.color_white:
                 return white;
             case R.id.color_infinite:
+                return infinite;
+            default:
+                return null;
+        }
+    }
+
+    public Drawable mapColorFromModel(@Adjustment.Color int color) {
+        switch (color) {
+            case Adjustment.COLOR_WHITE:
+                return white;
+            case Adjustment.COLOR_INFINITE:
                 return infinite;
             default:
                 return null;
@@ -200,6 +263,17 @@ public class AdjustViewModel extends BaseObservable {
             return R.id.color_infinite;
         } else {
             return View.NO_ID;
+        }
+    }
+
+    @Adjustment.Color
+    public int mapColorModelValue(Drawable color) {
+        if (color == white) {
+            return Adjustment.COLOR_WHITE;
+        } else if (color == infinite) {
+            return Adjustment.COLOR_INFINITE;
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 

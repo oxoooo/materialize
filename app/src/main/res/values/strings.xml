@@ -43,7 +43,7 @@
     <string name="color_white">White</string>
     <string name="color_gradient">Auto fill</string>
 
-    <string name="adjust_ok">Add to home</string>
+    <string name="adjust_install">Add to home</string>
     <string name="adjust_save">Save</string>
     <string name="adjust_cancel">Cancel</string>
     <string name="adjust_export_gallery">Export to gallery</string>

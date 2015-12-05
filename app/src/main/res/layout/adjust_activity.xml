@@ -230,10 +230,10 @@
                 android:text="@string/adjust_cancel" />
 
             <Button
-                android:id="@+id/ok"
+                android:id="@+id/install"
                 style="@style/DialogButtons.Button"
                 android:enabled="@{app != null}"
-                android:text="@string/adjust_ok"
+                android:text="@string/adjust_install"
                 android:textColor="?colorPrimary"
                 android:visibility="@{isNew ? View.VISIBLE : View.GONE}" />
 

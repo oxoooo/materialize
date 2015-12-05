@@ -24,11 +24,11 @@ import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.PopupMenu;
+import android.view.Menu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -99,10 +99,12 @@ public class AdjustActivity extends RxAppCompatActivity {
             child.setBackgroundDrawable(null);
         }
 
-        PopupMenu popupMenu = new PopupMenu(this, binding.more);
-        popupMenu.inflate(R.menu.adjust);
+        PopupMenu popup = new PopupMenu(this, binding.more);
+        popup.inflate(R.menu.adjust);
 
-        binding.more.setOnClickListener(v -> popupMenu.show());
+        Menu menu = popup.getMenu();
+
+        binding.more.setOnClickListener(v -> popup.show());
 
         iconCacheManager = new IconCacheManager(this);
 
@@ -143,20 +145,15 @@ public class AdjustActivity extends RxAppCompatActivity {
                         .findFirst())
                 .cache();
 
-        adjustment.subscribe(model -> {
-            boolean isNew = model == null;
-            binding.setIsNew(isNew);
-            popupMenu.getMenu().findItem(R.id.re_add_to_home).setVisible(!isNew);
-        });
+        adjustment.map(model -> model == null)
+                .doOnNext(binding::setIsNew)
+                .map(isNew -> !isNew)
+                .subscribe(RxMenuItem.visible(menu.findItem(R.id.re_add_to_home)));
 
         adjustment.filter(model -> model != null)
                 .zipWith(infinity, (model, drawable) -> model)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(model -> {
-                    viewModel.setShape(mapShape(model.getShape()));
-                    viewModel.setPadding(model.getPadding());
-                    viewModel.setBackground(mapBackground(model.getColor()));
-                });
+                .subscribe(viewModel::applyFromModel);
 
         RxView.clicks(binding.cancel)
                 .compose(bindToLifecycle())
@@ -192,9 +189,9 @@ public class AdjustActivity extends RxAppCompatActivity {
                         model.setComponent(app.component.flattenToString());
                     }
 
-                    model.setShape(mapShapeRadioId(viewModel.getShapeRadioId()));
+                    model.setShape(viewModel.getShapeModelValue());
                     model.setPadding(viewModel.getPadding());
-                    model.setColor(mapBackgroundRadioId(viewModel.getBackgroundRadioId()));
+                    model.setColor(viewModel.getBackgroundModelValue());
 
                     realm.commitTransaction();
 
@@ -212,23 +209,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                     finishWithResult(RESULT_OK);
                 });
 
-        RxView.clicks(binding.ok)
-                .compose(bindToLifecycle())
-                .zipWith(resolving, (avoid, app) -> app)
-                .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
-                .observeOn(AndroidSchedulers.mainThread())
-                .zipWith(resolving, (icon, app) -> {
-                    LauncherUtil.installShortcut(this, app.getIntent(), app.label, icon);
-                    return null;
-                })
-                .subscribe(avoid -> {
-                    Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
-                    MobclickAgent.onEvent(this, "compose", makeEvent("launcher"));
-                    MobclickAgent.onEvent(this, "install");
-                    finishWithResult(RESULT_OK);
-                });
-
-        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.re_add_to_home))
+        Observable.merge(RxView.clicks(binding.install), RxMenuItem.clicks(menu.findItem(R.id.re_add_to_home)))
                 .compose(bindToLifecycle())
                 .zipWith(resolving, (avoid, app) -> app)
                 .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
@@ -247,10 +228,10 @@ public class AdjustActivity extends RxAppCompatActivity {
         Observable<Boolean> permission = RxPermissions
                 .getInstance(this)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .doOnNext(RxMenuItem.enabled(popupMenu.getMenu().findItem(R.id.export_to_gallery)))
+                .doOnNext(RxMenuItem.enabled(menu.findItem(R.id.export_to_gallery)))
                 .filter(granted -> granted);
 
-        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.export_to_gallery))
+        RxMenuItem.clicks(menu.findItem(R.id.export_to_gallery))
                 .compose(bindToLifecycle())
                 .zipWith(resolving, (avoid, app) -> app)
                 .flatMap(avoid -> Observable.zip(renders, persist, (icon, ad) -> icon))
@@ -284,7 +265,7 @@ public class AdjustActivity extends RxAppCompatActivity {
                     }
                 });
 
-        RxMenuItem.clicks(popupMenu.getMenu().findItem(R.id.reset))
+        RxMenuItem.clicks(menu.findItem(R.id.reset))
                 .compose(bindToLifecycle())
                 .zipWith(resolving, (avoid, app) -> app)
                 .flatMap(avoid -> Observable.zip(deleteCache, deletePersist, (a, b) -> null))
@@ -328,64 +309,6 @@ public class AdjustActivity extends RxAppCompatActivity {
                 return "infinite";
             default:
                 return null;
-        }
-    }
-
-    public CompositeDrawable.Shape mapShape(@Adjustment.Shape int shape) {
-        switch (shape) {
-            case Adjustment.SHAPE_SQUARE:
-                return CompositeDrawable.Shape.SQUARE;
-            case Adjustment.SHAPE_SQUARE_SCORE:
-                return CompositeDrawable.Shape.SQUARE_SCORE;
-            case Adjustment.SHAPE_SQUARE_DOGEAR:
-                return CompositeDrawable.Shape.SQUARE_DOGEAR;
-            case Adjustment.SHAPE_ROUND:
-                return CompositeDrawable.Shape.ROUND;
-            case Adjustment.SHAPE_ROUND_SCORE:
-                return CompositeDrawable.Shape.ROUND_SCORE;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    @Adjustment.Shape
-    public int mapShapeRadioId(@IdRes int id) {
-        switch (id) {
-            case R.id.shape_square:
-                return Adjustment.SHAPE_SQUARE;
-            case R.id.shape_square_score:
-                return Adjustment.SHAPE_SQUARE_SCORE;
-            case R.id.shape_square_dog_ear:
-                return Adjustment.SHAPE_SQUARE_DOGEAR;
-            case R.id.shape_round:
-                return Adjustment.SHAPE_ROUND;
-            case R.id.shape_round_score:
-                return Adjustment.SHAPE_ROUND_SCORE;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    public Drawable mapBackground(@Adjustment.Color int color) {
-        switch (color) {
-            case Adjustment.COLOR_WHITE:
-                return viewModel.getWhite();
-            case Adjustment.COLOR_INFINITE:
-                return viewModel.getInfinite();
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    @Adjustment.Color
-    public int mapBackgroundRadioId(@IdRes int id) {
-        switch (id) {
-            case R.id.color_white:
-                return Adjustment.COLOR_WHITE;
-            case R.id.color_infinite:
-                return Adjustment.COLOR_INFINITE;
-            default:
-                throw new IllegalArgumentException();
         }
     }
 

@@ -42,7 +42,7 @@
     <string name="color_white">白色</string>
     <string name="color_gradient">智能填充</string>
 
-    <string name="adjust_ok">添加到主屏幕</string>
+    <string name="adjust_install">添加到主屏幕</string>
     <string name="adjust_save">保存</string>
     <string name="adjust_cancel">取消</string>
     <string name="adjust_export_gallery">导出到图库</string>
