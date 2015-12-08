@@ -20,7 +20,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
+def gitTag = 'git tag'.execute([], project.rootDir).text.trim().split("\n").last()
 def gitCommits = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 android {
