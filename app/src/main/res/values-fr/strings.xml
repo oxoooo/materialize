@@ -1,0 +1,59 @@
+<!--
+  ~ Materialize - Materialize all those not material
+  ~ Copyright (C) 2015  XiNGRZ <xxx@oxo.ooo>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="app_name">Materialize</string>
+
+    <string name="search">Rechercher</string>
+    <string name="search_hint">Rechercher des applications…</string>
+
+    <string name="about">À propos</string>
+    <string name="version" formatted="false">Version %s (%s)</string>
+    <string name="fork_me_on_github">Fork sur GitHub</string>
+    <string name="libraries_used">Bibliothèques utilisées</string>
+
+    <string name="update_available">Une nouvelle version %s est disponible</string>
+    <string name="update_confirm">Télécharger maintenant</string>
+    <string name="update_cancel">Annuler</string>
+
+    <string name="adjust_label_shape">Forme</string>
+    <string name="adjust_label_padding">Marge</string>
+    <string name="adjust_label_color">Couleur</string>
+
+    <string name="shape_square">Carré</string>
+    <string name="shape_round">Rond</string>
+
+    <string name="color_white">Blanc</string>
+    <string name="color_gradient">Automatique</string>
+
+    <string name="adjust_install">Ajouter à l\'accueil</string>
+    <string name="adjust_save">Sauvegarder</string>
+    <string name="adjust_cancel">Annuler</string>
+    <string name="adjust_export_gallery">Exporter vers la galerie</string>
+    <string name="adjust_reset">Réinitialiser</string>
+
+    <string name="re_add_to_home">Ajouter à nouveau</string>
+
+    <string name="fail_stencil">Impossible de charger les modèles</string>
+
+    <string name="toast_saved">Icône sauvegardée</string>
+    <string name="toast_added_to_home">Icône ajoutée à votre écran d\'accueil</string>
+    <string name="toast_exported_to_gallery">Icône exportée dans votre galerie</string>
+
+</resources>
