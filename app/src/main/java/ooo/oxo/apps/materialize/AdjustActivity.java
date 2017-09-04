@@ -219,7 +219,9 @@ public class AdjustActivity extends RxAppCompatActivity {
                     return null;
                 })
                 .subscribe(avoid -> {
-                    Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
+                        Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    }
                     MobclickAgent.onEvent(this, "compose", makeEvent("launcher"));
                     MobclickAgent.onEvent(this, "install");
                     finishWithResult(RESULT_OK);

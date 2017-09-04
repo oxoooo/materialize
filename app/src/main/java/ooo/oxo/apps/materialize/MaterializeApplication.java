@@ -24,7 +24,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
-import im.fir.sdk.FIR;
+// import im.fir.sdk.FIR;
 
 public class MaterializeApplication extends Application {
 
@@ -35,7 +35,7 @@ public class MaterializeApplication extends Application {
         MobclickAgent.setCatchUncaughtExceptions(false);
 
         if (BuildConfig.FIR_ENABLED) {
-            FIR.init(this);
+            // FIR.init(this);
         }
 
         MaterializeSharedState.init(this);

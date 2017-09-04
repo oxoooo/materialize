@@ -25,9 +25,9 @@ import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 
-import im.fir.sdk.FIR;
-import im.fir.sdk.callback.VersionCheckCallback;
-import im.fir.sdk.version.AppVersion;
+// import im.fir.sdk.FIR;
+// import im.fir.sdk.callback.VersionCheckCallback;
+// import im.fir.sdk.version.AppVersion;
 import ooo.oxo.apps.materialize.BuildConfig;
 import ooo.oxo.apps.materialize.R;
 
@@ -39,17 +39,17 @@ public class UpdateUtil {
             return;
         }
 
-        FIR.checkForUpdateInFIR(BuildConfig.FIR_API_TOKEN, new VersionCheckCallback() {
+        /*FIR.checkForUpdateInFIR(BuildConfig.FIR_API_TOKEN, new VersionCheckCallback() {
             @Override
             public void onSuccess(AppVersion version, boolean b) {
                 if (version.getVersionCode() > BuildConfig.VERSION_CODE) {
                     promptUpdate(context, version);
                 }
             }
-        });
+        });*/
     }
 
-    private static void promptUpdate(Context context, AppVersion version) {
+    /*private static void promptUpdate(Context context, AppVersion version) {
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.update_available, version.getVersionName()))
                 .setMessage(TextUtils.isEmpty(version.getChangeLog())
@@ -65,6 +65,6 @@ public class UpdateUtil {
                     }
                 })
                 .show();
-    }
+    }*/
 
 }
