@@ -21,17 +21,34 @@ package ooo.oxo.apps.materialize.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.support.annotation.Nullable;
 
 public class LauncherUtil {
 
     public static void installShortcut(Context context, Intent shortcut, String label, Bitmap icon) {
-        Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcut);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
-        context.sendBroadcast(intent);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
+            // Android 8.0 should use ShortcutManager to pin shortcuts.
+            ShortcutManager shortcutManager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
+            shortcutManager.requestPinShortcut(
+                    new ShortcutInfo.Builder(context, shortcut.getComponent().getPackageName())
+                            .setIntent(shortcut)
+                            .setShortLabel(label)
+                            .setIcon(Icon.createWithBitmap(icon))
+                            .build(),
+                    null
+            );
+        } else {
+	        Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+	        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcut);
+	        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
+	        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
+	        context.sendBroadcast(intent);
+        }
     }
 
     @Nullable

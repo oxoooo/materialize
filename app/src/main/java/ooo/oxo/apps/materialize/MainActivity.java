@@ -157,7 +157,9 @@ public class MainActivity extends RxAppCompatActivity
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(icon -> {
                     LauncherUtil.installShortcut(this, app.getIntent(), app.label, icon);
-                    Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
+                        Toast.makeText(this, R.string.toast_added_to_home, Toast.LENGTH_SHORT).show();
+                    }
                     MobclickAgent.onEvent(this, "install");
                 });
     }
